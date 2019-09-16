@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.List                      ( intersperse, isSuffixOf )
+import           Data.List                      ( intersperse
+                                                , isSuffixOf
+                                                )
 import           Data.List.Split                ( splitOn )
 import           Hakyll
 import           Hakyll.Web.Sass                ( sassCompiler )
@@ -13,21 +15,25 @@ main = hakyll $ do
     compile $ do
       body <- fmap itemBody templateBodyCompiler
       loadAllSnapshots "content/posts/*" "teaser"
-        >>= fmap (take 100) . recentFirst
-        >>= applyTemplateList body (defaultContext  `mappend` bodyField "posts")
+        >>= (fmap (take 100) . recentFirst)
+        >>= applyTemplateList body (defaultContext `mappend` bodyField "posts")
         >>= makeItem
         >>= loadAndApplyTemplate "templates/default.html" defaultContext
         >>= relativizeUrls
         >>= deIndexUrls
-  
-  match "content/posts/*" $ do
-    route $ directorizeDate `composeRoutes` stripContent `composeRoutes` setExtension "html"
+
+  match "content/posts/*" $ do
+    route
+      $               directorizeDate
+      `composeRoutes` stripContent
+      `composeRoutes` setExtension "html"
     compile $ do
       compiled <- pandocCompiler
-      full <- loadAndApplyTemplate "templates/post.html" defaultContext  compiled
-      teaser <- loadAndApplyTemplate "templates/post-teaser.html" defaultContext $ dropMore compiled
+      full <- loadAndApplyTemplate "templates/post.html" defaultContext compiled
+      teaser <- loadAndApplyTemplate "templates/post-teaser.html" defaultContext
+        $ dropMore compiled
       saveSnapshot "content" full
-      saveSnapshot "teaser" teaser
+      saveSnapshot "teaser"  teaser
       loadAndApplyTemplate "templates/default.html" defaultContext full
         >>= relativizeUrls
         >>= deIndexUrls
@@ -64,9 +70,11 @@ directorizeDate = customRoute (directorize . toFilePath)
     (date, rest) = splitAt 3 $ splitOn "-" path
 
 stripIndex :: String -> String
-stripIndex url = if "index.html" `isSuffixOf` url && elem (head url) ("/." :: String)
-      then take (length url - 10) url else url
-    
+stripIndex url =
+  if "index.html" `isSuffixOf` url && elem (head url) ("/." :: String)
+    then take (length url - 10) url
+    else url
+
 deIndexUrls :: Item String -> Compiler (Item String)
 deIndexUrls item = return $ fmap (withUrls stripIndex) item
 
