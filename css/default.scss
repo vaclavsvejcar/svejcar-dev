@@ -1,7 +1,7 @@
 @import "shared/env";
 @import "shared/post";
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700&display=swap");
-@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Oswald&display=swap");
 
 html,
 body {
@@ -15,11 +15,26 @@ body {
 }
 
 .internal-links {
-  a, a:visited {
+  a,
+  a:visited {
     color: $color-link-internal;
     text-decoration: none;
     text-transform: uppercase;
   }
+
+  a:hover {
+    color: $color-link-external;
+  }
+}
+
+a,
+a:visited {
+  text-decoration: none;
+  color: $color-link-external;
+}
+
+a:hover {
+  color: $color-link-internal;
 }
 
 aside,
@@ -28,6 +43,10 @@ header {
   a:visited {
     color: $color-light-1;
     text-decoration: none;
+  }
+
+  a:hover {
+    color: $color-light-1;
   }
 }
 
@@ -58,7 +77,6 @@ aside {
 }
 
 aside > section.about {
-  // --- Positioning --
   margin-bottom: 25px;
 
   > h1,
@@ -67,7 +85,6 @@ aside > section.about {
     padding: 0;
     text-align: center;
 
-    // --- Appearance ---
     font-weight: normal;
   }
 
@@ -76,13 +93,11 @@ aside > section.about {
     margin: 0 auto 25px auto;
     width: 150px;
 
-    // --- Appearance ---
     border: 2px $color-light-1 solid;
     border-radius: 100%;
   }
 
   > h1 {
-    // --- Appearance ---
     font-size: 2em;
   }
 
@@ -93,15 +108,12 @@ aside > section.about {
 }
 
 aside > nav {
-  // --- Appearance ---
   text-align: center;
   font-size: 0.9em;
 
   > ul {
-    // --- Positioning ---
     margin: 0;
     padding: 0;
-    // --- Appearance ---
     list-style: none;
 
     > li {
@@ -126,10 +138,33 @@ aside > nav {
   }
 }
 
-main {
+main,
+footer {
   margin-left: $size-aside-width;
   padding: 0 $padding-big;
   color: $color-text;
+}
+
+footer {
+  display: block;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  font-size: 0.8em;
+  color: $color-light-3;
+
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  > .left {
+    float: left;
+  }
+
+  > .right {
+    float: right;
+  }
 }
 
 @media screen and (max-width: 800px) {
@@ -147,9 +182,19 @@ main {
     }
   }
 
-  main {
+  main,
+  footer {
     margin-top: $size-header-height;
     margin-left: 0px;
     padding: 0 $padding-small;
+  }
+
+  footer {
+    > .left,
+    > .right {
+      float: none;
+      display: block;
+      text-align: center;
+    }
   }
 }
