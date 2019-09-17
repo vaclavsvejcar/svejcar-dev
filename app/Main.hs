@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+import           Blog.Tags
+import           Control.Monad                  ( filterM )
 import           Data.List                      ( intersperse
                                                 , isSuffixOf
                                                 )
@@ -10,13 +12,33 @@ import           System.FilePath                ( splitExtension )
 main :: IO ()
 main = hakyll $ do
 
+  tags <- buildTags "content/posts/*" (fromCapture "tags/*/index.html")
+
+  tagsRules tags $ \tag pattern -> do
+    route idRoute
+    compile $ do
+      list <- postList
+        tags
+        (\t -> recentFirst t
+          >>= filterM (fmap (elem tag) . getTags . itemIdentifier)
+        )
+      let ctx =
+            constField "tag" tag
+              `mappend` constField "posts" list
+              `mappend` defaultContext
+      makeItem ""
+        >>= loadAndApplyTemplate "templates/posts-by-tag.html" ctx
+        >>= loadAndApplyTemplate "templates/default.html"      ctx
+        >>= relativizeUrls
+        >>= deIndexUrls
+
   match "content/index.html" $ do
     route stripContent
     compile $ do
       body <- fmap itemBody templateBodyCompiler
       loadAllSnapshots "content/posts/*" "teaser"
         >>= (fmap (take 100) . recentFirst)
-        >>= applyTemplateList body (defaultContext `mappend` bodyField "posts")
+        >>= applyTemplateList body (postCtx tags `mappend` bodyField "posts")
         >>= makeItem
         >>= loadAndApplyTemplate "templates/default.html" defaultContext
         >>= relativizeUrls
@@ -29,8 +51,8 @@ main = hakyll $ do
       `composeRoutes` setExtension "html"
     compile $ do
       compiled <- pandocCompiler
-      full <- loadAndApplyTemplate "templates/post.html" defaultContext compiled
-      teaser <- loadAndApplyTemplate "templates/post-teaser.html" defaultContext
+      full <- loadAndApplyTemplate "templates/post.html" (postCtx tags) compiled
+      teaser <- loadAndApplyTemplate "templates/post-teaser.html" (postCtx tags)
         $ dropMore compiled
       saveSnapshot "content" full
       saveSnapshot "teaser"  teaser
@@ -52,6 +74,13 @@ main = hakyll $ do
     compile copyFileCompiler
 
   match "templates/*" $ compile templateBodyCompiler
+
+postList :: Tags -> ([Item String] -> Compiler [Item String]) -> Compiler String
+postList tags sortFilter = do
+  posts   <- sortFilter =<< loadAll "content/posts/*"
+  itemTpl <- loadBody "templates/post-link.html"
+  list    <- applyTemplateList itemTpl (postCtx tags) posts
+  return list
 
 stripContent :: Routes
 stripContent = gsubRoute "content/" $ const ""
@@ -80,3 +109,10 @@ deIndexUrls item = return $ fmap (withUrls stripIndex) item
 
 dropMore :: Item String -> Item String
 dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
+
+postCtx :: Tags -> Context String
+postCtx tags =
+  dateField "date" "%e %B %Y"
+    `mappend` dateField "datetime" "%Y-%m-%d"
+    `mappend` (tagLinks getTags) "tags" tags
+    `mappend` defaultContext
