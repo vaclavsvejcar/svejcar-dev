@@ -4,6 +4,7 @@ module Blog.Tags where
 import           Control.Monad                  ( forM )
 import           Data.List                      ( intercalate
                                                 , intersperse
+                                                , sort
                                                 )
 import           Data.Maybe                     ( catMaybes )
 import           Hakyll
@@ -20,7 +21,7 @@ import qualified Text.Blaze.Html5.Attributes   as A
 tagLinks :: (Identifier -> Compiler [String]) -> String -> Tags -> Context a
 tagLinks extractTags key tags = field key $ \item -> do
   tags' <- extractTags $ itemIdentifier item
-  links <- forM tags'
+  links <- forM (sort tags')
     $ \tag -> renderLink tag <$> getRoute (tagsMakeId tags tag)
   return . renderHtml . H.ul . mconcat . catMaybes $ links
  where
