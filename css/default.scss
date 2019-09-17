@@ -38,7 +38,7 @@ a:hover {
 }
 
 aside,
-header {
+body > header {
   a,
   a:visited {
     color: $color-light-1;
@@ -50,7 +50,7 @@ header {
   }
 }
 
-header {
+body > header {
   display: none;
   position: fixed;
   top: 0;
@@ -162,6 +162,20 @@ aside > .tag-cloud {
           color: $color-light-1;
         }
       }
+    }
+  }
+}
+
+main {
+  header {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: normal;
+    font-size: 2em;
+
+    > a {
+      color: $color-dark-primary;
+      text-decoration: none;
     }
   }
 }
