@@ -108,7 +108,7 @@ dropMore :: Item String -> Item String
 dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
 
 siteCtx :: Tags -> Context String
-siteCtx tags = BT.tagCloudField "cloud" 80 200 tags <> defaultContext
+siteCtx tags = BT.tagCloudField "cloud" 60 150 tags <> defaultContext
 
 postCtx :: Tags -> Context String
 postCtx tags =
