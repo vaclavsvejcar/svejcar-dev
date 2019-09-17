@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Blog.Tags where
+module Svejcar.Dev.Tags where
 
 import           Control.Monad                  ( forM )
 import           Data.List                      ( intercalate

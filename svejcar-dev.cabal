@@ -5,7 +5,7 @@ cabal-version:      >= 1.10
 
 library
   hs-source-dirs:   src
-  exposed-modules:  Blog.Tags
+  exposed-modules:  Svejcar.Dev.Tags
   build-depends:    base == 4.*
                   , blaze-html
                   , hakyll == 4.13.*

@@ -122,7 +122,8 @@ aside > nav {
       display: inline-block;
       margin: -1px;
 
-      > a {
+      > a,
+      > a:visited {
         color: $color-light-2;
         padding: 5px 10px;
 

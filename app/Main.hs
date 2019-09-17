@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-import qualified Blog.Tags                     as BT
+import qualified Svejcar.Dev.Tags              as SDT
 import           Control.Monad                  ( filterM )
 import           Data.List                      ( intersperse
                                                 , isSuffixOf
@@ -108,11 +108,11 @@ dropMore :: Item String -> Item String
 dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
 
 siteCtx :: Tags -> Context String
-siteCtx tags = BT.tagCloudField "cloud" 60 150 tags <> defaultContext
+siteCtx tags = SDT.tagCloudField "cloud" 60 150 tags <> defaultContext
 
 postCtx :: Tags -> Context String
 postCtx tags =
   dateField "date" "%e %B %Y"
     <> dateField "datetime" "%Y-%m-%d"
-    <> (BT.tagLinks getTags) "tags" tags
+    <> (SDT.tagLinks getTags) "tags" tags
     <> siteCtx tags
