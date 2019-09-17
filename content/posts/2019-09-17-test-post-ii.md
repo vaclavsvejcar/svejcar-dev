@@ -1,6 +1,6 @@
 ---
 title: Test post II
-tags: scala, haskell
+tags: scala, monad
 ---
 
  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris tincidunt sem sed arcu. Integer tempor. Etiam sapien elit, consequat eget, tristique non, venenatis quis, ante. Nulla non arcu lacinia neque faucibus fringilla. Proin pede metus, vulputate nec, fermentum fringilla, vehicula vitae, justo. Maecenas lorem. Donec quis nibh at felis congue commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce dui leo, imperdiet in, aliquam sit amet, feugiat eu, orci. Aenean fermentum risus id tortor. Maecenas sollicitudin. Donec quis nibh at felis congue commodo. Aenean id metus id velit ullamcorper pulvinar. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?

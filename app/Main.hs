@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-import           Blog.Tags
+import qualified Blog.Tags                     as BT
 import           Control.Monad                  ( filterM )
 import           Data.List                      ( intersperse
                                                 , isSuffixOf
@@ -22,10 +22,7 @@ main = hakyll $ do
         (\t -> recentFirst t
           >>= filterM (fmap (elem tag) . getTags . itemIdentifier)
         )
-      let ctx =
-            constField "tag" tag
-              `mappend` constField "posts" list
-              `mappend` defaultContext
+      let ctx = constField "tag" tag <> constField "posts" list <> siteCtx tags
       makeItem ""
         >>= loadAndApplyTemplate "templates/posts-by-tag.html" ctx
         >>= loadAndApplyTemplate "templates/default.html"      ctx
@@ -38,9 +35,9 @@ main = hakyll $ do
       body <- fmap itemBody templateBodyCompiler
       loadAllSnapshots "content/posts/*" "teaser"
         >>= (fmap (take 100) . recentFirst)
-        >>= applyTemplateList body (postCtx tags `mappend` bodyField "posts")
+        >>= applyTemplateList body (postCtx tags <> bodyField "posts")
         >>= makeItem
-        >>= loadAndApplyTemplate "templates/default.html" defaultContext
+        >>= loadAndApplyTemplate "templates/default.html" (siteCtx tags)
         >>= relativizeUrls
         >>= deIndexUrls
 
@@ -56,7 +53,7 @@ main = hakyll $ do
         $ dropMore compiled
       saveSnapshot "content" full
       saveSnapshot "teaser"  teaser
-      loadAndApplyTemplate "templates/default.html" defaultContext full
+      loadAndApplyTemplate "templates/default.html" (siteCtx tags) full
         >>= relativizeUrls
         >>= deIndexUrls
 
@@ -110,9 +107,12 @@ deIndexUrls item = return $ fmap (withUrls stripIndex) item
 dropMore :: Item String -> Item String
 dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
 
+siteCtx :: Tags -> Context String
+siteCtx tags = BT.tagCloudField "cloud" 80 200 tags <> defaultContext
+
 postCtx :: Tags -> Context String
 postCtx tags =
   dateField "date" "%e %B %Y"
-    `mappend` dateField "datetime" "%Y-%m-%d"
-    `mappend` (tagLinks getTags) "tags" tags
-    `mappend` defaultContext
+    <> dateField "datetime" "%Y-%m-%d"
+    <> (BT.tagLinks getTags) "tags" tags
+    <> siteCtx tags

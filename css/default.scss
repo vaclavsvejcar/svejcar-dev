@@ -138,6 +138,33 @@ aside > nav {
   }
 }
 
+aside > .tag-cloud {
+  margin-top: 100px;
+  text-align: center;
+
+  > ul {
+    margin: 0 50px;
+    padding: 0;
+
+    > li {
+      display: inline-block;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      > a {
+        color: $color-light-2;
+
+        &:hover {
+          color: $color-light-1;
+        }
+      }
+    }
+  }
+}
+
 main,
 footer {
   margin-left: $size-aside-width;

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Blog.Tags where
 
 import           Control.Monad                  ( forM )
@@ -6,7 +7,8 @@ import           Data.List                      ( intercalate
                                                 )
 import           Data.Maybe                     ( catMaybes )
 import           Hakyll
-import           Text.Blaze.Html                ( toHtml
+import           Text.Blaze.Html                ( preEscapedToHtml
+                                                , toHtml
                                                 , toValue
                                                 , (!)
                                                 )
@@ -25,3 +27,21 @@ tagLinks extractTags key tags = field key $ \item -> do
   renderLink tag route = pathToUrl <$> route
    where
     pathToUrl path = H.li $ H.a ! A.href (toValue . toUrl $ path) $ toHtml tag
+
+tagCloudField :: String -> Double -> Double -> Tags -> Context String
+tagCloudField key minSize maxSize tags =
+  field key $ \_ -> tagCloud minSize maxSize tags
+
+tagCloud :: Double -> Double -> Tags -> Compiler String
+tagCloud = renderTagCloudWith makeLink joinLinks
+ where
+  joinLinks = renderHtml . H.ul . mconcat . map (H.li . preEscapedToHtml)
+  makeLink minSize maxSize tag url count min' max' =
+    let diff     = 1 + fromIntegral max' - fromIntegral min'
+        relative = (fromIntegral count - fromIntegral min') / diff
+        size     = floor $ minSize + relative * (maxSize - minSize) :: Int
+    in  renderHtml
+          $ H.a
+          ! A.style (toValue $ "font-size: " ++ show size ++ "%")
+          ! A.href (toValue url)
+          $ toHtml tag
