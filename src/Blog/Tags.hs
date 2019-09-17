@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Blog.Tags where
 
 import           Control.Monad                  ( forM )
@@ -21,7 +20,8 @@ tagLinks extractTags key tags = field key $ \item -> do
   tags' <- extractTags $ itemIdentifier item
   links <- forM tags'
     $ \tag -> renderLink tag <$> getRoute (tagsMakeId tags tag)
-  return . renderHtml . mconcat . intersperse " | " . catMaybes $ links
+  return . renderHtml . H.ul . mconcat . catMaybes $ links
  where
   renderLink tag route = pathToUrl <$> route
-    where pathToUrl path = H.a ! A.href (toValue . toUrl $ path) $ toHtml tag
+   where
+    pathToUrl path = H.li $ H.a ! A.href (toValue . toUrl $ path) $ toHtml tag

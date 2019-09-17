@@ -1,0 +1,48 @@
+.blog-post > h1 {
+  margin-bottom: 10px;
+  font-weight: normal;
+  font-size: 2em;
+
+  > a {
+    color: $color-dark-primary;
+    text-decoration: none;
+  }
+}
+
+.blog-post > .post-meta {
+  > span.date {
+    margin-right: 50px;
+    text-transform: uppercase;
+    color: $color-light-3;
+  }
+
+  > ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    font-size: 0.8em;
+
+    > li {
+      display: inline-block;
+
+      &:not(:first-child) {
+        margin-left: 5px;
+      }
+      &:not(:last-child) {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+.blog-post .read-more {
+  border-top: 1px $color-light-2 solid;
+  font-size: 0.8em;
+
+  > a {
+    display: block;
+    padding: 10px 0;
+  }
+}

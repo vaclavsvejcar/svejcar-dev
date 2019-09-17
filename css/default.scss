@@ -1,5 +1,7 @@
 @import "shared/env";
+@import "shared/post";
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700&display=swap");
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
 
 html,
 body {
@@ -10,6 +12,14 @@ body {
 body {
   font-family: "Montserrat", sans-serif;
   background: $color-light-1;
+}
+
+.internal-links {
+  a, a:visited {
+    color: $color-link-internal;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
 }
 
 aside,
