@@ -5,6 +5,12 @@ tags: scala, monad
 
  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Mauris tincidunt sem sed arcu. Integer tempor. Etiam sapien elit, consequat eget, tristique non, venenatis quis, ante. Nulla non arcu lacinia neque faucibus fringilla. Proin pede metus, vulputate nec, fermentum fringilla, vehicula vitae, justo. Maecenas lorem. Donec quis nibh at felis congue commodo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce dui leo, imperdiet in, aliquam sit amet, feugiat eu, orci. Aenean fermentum risus id tortor. Maecenas sollicitudin. Donec quis nibh at felis congue commodo. Aenean id metus id velit ullamcorper pulvinar. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
 
+```haskell
+tagCloudField :: String -> Double -> Double -> Tags -> Context String
+tagCloudField key minSize maxSize tags =
+  field key $ \_ -> tagCloud minSize maxSize tags
+```
+
 <!-- MORE -->
 
 Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. In rutrum. Proin in tellus sit amet nibh dignissim sagittis. In convallis. Fusce tellus. Duis sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. Integer tempor. In sem justo, commodo ut, suscipit at, pharetra vitae, orci. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Vestibulum fermentum tortor id mi. Integer imperdiet lectus quis justo. Maecenas fermentum, sem in pharetra pellentesque, velit turpis volutpat ante, in pharetra metus odio a lectus. Praesent in mauris eu tortor porttitor accumsan. Maecenas lorem. Vivamus porttitor turpis ac leo. Phasellus et lorem id felis nonummy placerat. Nulla non arcu lacinia neque faucibus fringilla.

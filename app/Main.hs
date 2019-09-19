@@ -60,6 +60,10 @@ main = hakyll $ do
   match "images/*.jpg" $ do
     route idRoute
     compile copyFileCompiler
+  
+  match "css/*.css" $ do
+    route idRoute
+    compile copyFileCompiler
 
   match "css/*.scss" $ do
     route $ setExtension "css"
