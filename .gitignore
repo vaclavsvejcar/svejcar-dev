@@ -24,4 +24,6 @@ stack.yaml.lock
 
 ## Hakyll specific
 _cache/
+_draft_cache/
+_draft/
 _site/
