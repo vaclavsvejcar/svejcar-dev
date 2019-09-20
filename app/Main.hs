@@ -37,7 +37,8 @@ main = do
     tagsRules tags $ \tag pattern -> do
       route idRoute
       compile $ do
-        list <- (postList postsPattern)
+        list <- postList
+          postsPattern
           tags
           (\t -> recentFirst t
             >>= filterM (fmap (elem tag) . getTags . itemIdentifier)

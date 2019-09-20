@@ -3,7 +3,7 @@ title: Haskell on Raspberry PI 4
 tags: haskell, stack, raspberry pi, ghc, arm
 ---
 
-Last year, I purchased the [Raspberry Pi 3B+] for some hobby projects. Shortly after I started to learn [Haskell], I was wondering if I could build and run _Haskell_ software on the [ARMv7] platform. So I made some attempts with _Raspberry Pi 3B+_ but quickly realized that despite being able to run compiled binaries, the 1GB or RAM is just not enough to build them using the [GHC]. So I gave it up for a while.
+Last year, I purchased the [Raspberry Pi 3B+] for some hobby projects. Shortly after I started to learn [Haskell], I was wondering if I could build and run _Haskell_ software on the [ARMv7] platform. So I made some attempts with my _Raspberry_ but quickly realized that despite being able to run compiled binaries, the 1GB or RAM is just not enough to build them using the [GHC]. So I gave it up for a while.
 
 Then the [Raspberry Pi 4B] came out, with option to have up to 4GB of RAM. So I purchased the 4GB model and tried again. This time, with greatly increased available RAM size, I was able to make things working. You can find the entire process described in steps bellow.
 
@@ -17,7 +17,7 @@ Also worth mentioning that for my experimenting, I'm running official [Raspbian]
 ## Installation steps
 
 ### Increase SWAP size
-Despite 4GB of ram should be enough, I decided to increase the default _100MB_ to _1GB_, just to be sure.
+Although 4GB of RAM _ought to be enough for anyone™_, I decided to increase the default value of _100MB_ to _1GB_, just in case.
 
 ```bash
 $ sudo dphys-swapfile swapoff  # disable swap
