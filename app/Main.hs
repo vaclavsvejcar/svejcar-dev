@@ -45,10 +45,13 @@ main = do
             >>= filterM (fmap (elem tag) . getTags . itemIdentifier)
           )
         let ctx =
-              constField "tag" tag <> constField "posts" list <> siteCtx tags
+              constField "tag" tag
+                <> constField "title" ("Posts for tag: " ++ tag)
+                <> constField "posts" list
+                <> siteCtx tags
         makeItem ""
-          >>= loadAndApplyTemplate "templates/posts-by-tag.html" ctx
-          >>= loadAndApplyTemplate "templates/default.html"      ctx
+          >>= loadAndApplyTemplate "templates/posts-list.html" ctx
+          >>= loadAndApplyTemplate "templates/default.html"     ctx
           >>= relativizeUrls
           >>= deIndexUrls
 
@@ -100,7 +103,7 @@ main = do
                 <> constField "title" "Blog Archive"
                 <> (siteCtx tags)
         makeItem ""
-          >>= loadAndApplyTemplate "templates/posts-links.html" archiveCtx
+          >>= loadAndApplyTemplate "templates/posts-list.html" archiveCtx
           >>= loadAndApplyTemplate "templates/default.html"     archiveCtx
           >>= relativizeUrls
           >>= deIndexUrls
