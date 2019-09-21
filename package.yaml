@@ -1,0 +1,31 @@
+name: svejcar-dev
+version: 0.1.0.0
+github: "vaclavsvejcar/svejcar-dev"
+license: Apache-2.0
+author: "Vaclav Svejcar"
+maintainer: "vaclav.svejcar@gmail.com"
+copyright: "2019 Vaclav Svejcar"
+
+dependencies:
+  - base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  dependencies:
+    - blaze-html
+    - hakyll
+
+executables:
+  site:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - filepath
+      - hakyll
+      - hakyll-sass
+      - split
+      - svejcar-dev

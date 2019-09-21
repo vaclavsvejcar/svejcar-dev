@@ -22,7 +22,8 @@ cabal.project.local~
 .ghc.environment.*
 stack.yaml.lock
 
-## Hakyll specific
+## Project specific
+svejcar-dev.cabal
 _cache/
 _draft_cache/
 _draft/
