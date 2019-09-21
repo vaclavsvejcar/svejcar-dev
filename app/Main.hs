@@ -91,6 +91,19 @@ main = do
         >>= relativizeUrls
         >>= deIndexUrls
 
+    create ["archive/index.html"] $ do
+      route idRoute
+      compile $ do
+        let archiveCtx =
+              field "posts" (\_ -> postList postsPattern tags recentFirst)
+                <> constField "title" "Blog Archive"
+                <> (siteCtx tags)
+        makeItem ""
+          >>= loadAndApplyTemplate "templates/posts-links.html" archiveCtx
+          >>= loadAndApplyTemplate "templates/default.html"     archiveCtx
+          >>= relativizeUrls
+          >>= deIndexUrls
+
     match "images/*.jpg" $ do
       route idRoute
       compile copyFileCompiler
