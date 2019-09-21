@@ -82,6 +82,15 @@ main = do
           >>= relativizeUrls
           >>= deIndexUrls
 
+    match "content/about/index.md" $ do
+      route $ stripContent `composeRoutes` setExtension "html"
+      compile
+        $   pandocCompiler
+        >>= loadAndApplyTemplate "templates/static.html"  (siteCtx tags)
+        >>= loadAndApplyTemplate "templates/default.html" (siteCtx tags)
+        >>= relativizeUrls
+        >>= deIndexUrls
+
     match "images/*.jpg" $ do
       route idRoute
       compile copyFileCompiler
