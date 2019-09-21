@@ -13,7 +13,10 @@ library:
   source-dirs: src
   dependencies:
     - blaze-html
+    - bytestring
     - hakyll
+    - hjsmin
+    - text
 
 executables:
   site:

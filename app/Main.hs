@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-import qualified Svejcar.Dev.Tags              as SDT
 import           Control.Monad                  ( filterM
                                                 , when
                                                 )
@@ -12,6 +11,8 @@ import           Hakyll.Web.Sass                ( sassCompiler )
 import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
+import           Svejcar.Dev.JavaScript
+import qualified Svejcar.Dev.Tags              as SDT
 import           System.FilePath                ( splitExtension )
 
 main :: IO ()
@@ -119,7 +120,7 @@ main = do
 
     match "js/*.js" $ do
       route idRoute
-      compile copyFileCompiler
+      compile compressJsCompiler
 
     match "templates/*" $ compile templateBodyCompiler
 
