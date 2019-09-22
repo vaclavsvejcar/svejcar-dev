@@ -8,6 +8,13 @@ copyright: "2019 Vaclav Svejcar"
 
 dependencies:
   - base >= 4.7 && < 5
+ghc-options:
+  - -O2
+  - -Wall
+  - -Wcompat
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wredundant-constraints
 
 library:
   source-dirs: src

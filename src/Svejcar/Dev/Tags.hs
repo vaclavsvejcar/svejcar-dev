@@ -2,10 +2,7 @@
 module Svejcar.Dev.Tags where
 
 import           Control.Monad                  ( forM )
-import           Data.List                      ( intercalate
-                                                , intersperse
-                                                , sort
-                                                )
+import           Data.List                      ( sort )
 import           Data.Maybe                     ( catMaybes )
 import           Hakyll
 import           Text.Blaze.Html                ( preEscapedToHtml
@@ -25,7 +22,7 @@ tagLinks extractTags key tags = field key $ \item -> do
     $ \tag -> renderLink tag <$> getRoute (tagsMakeId tags tag)
   return . renderHtml . H.ul . mconcat . catMaybes $ links
  where
-  renderLink tag route = pathToUrl <$> route
+  renderLink tag tagRoute = pathToUrl <$> tagRoute
    where
     pathToUrl path = H.li $ H.a ! A.href (toValue . toUrl $ path) $ toHtml tag
 

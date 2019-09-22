@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Control.Monad                  ( filterM
                                                 , when
+                                                , (>=>)
                                                 )
 import           Data.List                      ( intersperse
                                                 , isSuffixOf
@@ -35,15 +36,13 @@ main = do
 
     tags <- buildTags postsPattern (fromCapture "tags/*/index.html")
 
-    tagsRules tags $ \tag pattern -> do
+    tagsRules tags $ \tag _ -> do
       route idRoute
       compile $ do
         list <- postList
           postsPattern
           tags
-          (\t -> recentFirst t
-            >>= filterM (fmap (elem tag) . getTags . itemIdentifier)
-          )
+          (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
         let ctx =
               constField "tag" tag
                 <> constField "title" ("Posts for tag: " ++ tag)
@@ -51,7 +50,7 @@ main = do
                 <> siteCtx tags
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" ctx
-          >>= loadAndApplyTemplate "templates/default.html"     ctx
+          >>= loadAndApplyTemplate "templates/default.html"    ctx
           >>= relativizeUrls
           >>= deIndexUrls
 
@@ -80,8 +79,8 @@ main = do
         teaser <-
           loadAndApplyTemplate "templates/post-teaser.html" (postCtx tags)
             $ dropMore compiled
-        saveSnapshot "content" full
-        saveSnapshot "teaser"  teaser
+        _ <- saveSnapshot "content" full
+        _ <- saveSnapshot "teaser" teaser
         loadAndApplyTemplate "templates/default.html" (siteCtx tags) full
           >>= relativizeUrls
           >>= deIndexUrls
@@ -101,10 +100,10 @@ main = do
         let archiveCtx =
               field "posts" (\_ -> postList postsPattern tags recentFirst)
                 <> constField "title" "Blog Archive"
-                <> (siteCtx tags)
+                <> siteCtx tags
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" archiveCtx
-          >>= loadAndApplyTemplate "templates/default.html"     archiveCtx
+          >>= loadAndApplyTemplate "templates/default.html"    archiveCtx
           >>= relativizeUrls
           >>= deIndexUrls
 
@@ -135,8 +134,7 @@ postList
 postList postsPattern tags sortFilter = do
   posts   <- sortFilter =<< loadAll postsPattern
   itemTpl <- loadBody "templates/post-link.html"
-  list    <- applyTemplateList itemTpl (postCtx tags) posts
-  return list
+  applyTemplateList itemTpl (postCtx tags) posts
 
 stripContent :: Routes
 stripContent = gsubRoute "content/" $ const ""
@@ -173,5 +171,5 @@ postCtx :: Tags -> Context String
 postCtx tags =
   dateField "date" "%e %B %Y"
     <> dateField "datetime" "%Y-%m-%d"
-    <> (SDT.tagLinks getTags) "tags" tags
+    <> SDT.tagLinks getTags "tags" tags
     <> siteCtx tags
