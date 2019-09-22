@@ -170,9 +170,14 @@ main {
     font-weight: normal;
     font-size: 2em;
 
-    > a {
+    > a,
+    a:visited {
       color: $color-dark-primary;
       text-decoration: none;
+    }
+
+    > a:hover {
+      color: $color-link-internal;
     }
   }
 }
