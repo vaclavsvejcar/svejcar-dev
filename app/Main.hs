@@ -12,10 +12,15 @@ import           Hakyll.Web.Sass                ( sassCompiler )
 import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
+import           Svejcar.Dev.Config
 import           Svejcar.Dev.JavaScript
 import           Svejcar.Dev.Meta               ( buildVersion )
 import qualified Svejcar.Dev.Tags              as SDT
 import           System.FilePath                ( splitExtension )
+
+siteConfig :: SiteConfig
+siteConfig =
+  SiteConfig { gaId = "UA-148507120-1", siteRoot = "https://svejcar.dev" }
 
 main :: IO ()
 main = do
@@ -174,6 +179,7 @@ siteCtx :: Tags -> Context String
 siteCtx tags =
   SDT.tagCloudField "cloud" 60 150 tags
     <> constField "buildVersion" buildVersion
+    <> constField "gaId"         (gaId siteConfig)
     <> defaultContext
 
 postCtx :: Tags -> Context String
