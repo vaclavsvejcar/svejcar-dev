@@ -4,5 +4,5 @@ flags: {}
 packages:
   - "."
 extra-deps:
-  - "hakyll-4.13.0.0"
+  - "hakyll-4.13.0.1"
   - "hakyll-sass-0.2.4"
