@@ -13,6 +13,7 @@ import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
 import           Svejcar.Dev.JavaScript
+import           Svejcar.Dev.Meta               ( buildVersion )
 import qualified Svejcar.Dev.Tags              as SDT
 import           System.FilePath                ( splitExtension )
 
@@ -170,7 +171,10 @@ dropMore :: Item String -> Item String
 dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
 
 siteCtx :: Tags -> Context String
-siteCtx tags = SDT.tagCloudField "cloud" 60 150 tags <> defaultContext
+siteCtx tags =
+  SDT.tagCloudField "cloud" 60 150 tags
+    <> constField "buildVersion" buildVersion
+    <> defaultContext
 
 postCtx :: Tags -> Context String
 postCtx tags =
