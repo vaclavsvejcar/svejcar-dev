@@ -23,9 +23,9 @@
     </section>
     <nav>
       <ul>
-        <li><a class="active" href="/">blog</a></li>
-        <li><a href="/archive/">archive</a></li>
-        <li><a href="/about/">about me</a></li>
+        <li><a $if(page-blog)$ class="active" $endif$ href="/">blog</a></li>
+        <li><a $if(page-archive)$ class="active" $endif$ href="/archive/">archive</a></li>
+        <li><a $if(page-about)$ class="active" $endif$ href="/about/">about me</a></li>
       </ul>
     </nav>
     <div class="tag-cloud">$cloud$</div>

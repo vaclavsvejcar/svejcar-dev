@@ -45,8 +45,9 @@ main = do
           (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
         let ctx =
               constField "tag" tag
-                <> constField "title" ("Posts for tag: " ++ tag)
-                <> constField "posts" list
+                <> constField "title"     ("Posts for tag: " ++ tag)
+                <> constField "posts"     list
+                <> constField "page-blog" ""
                 <> siteCtx tags
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" ctx
@@ -55,6 +56,7 @@ main = do
           >>= deIndexUrls
 
     match "content/index.html" $ do
+      let ctx = constField "page-blog" "" <> siteCtx tags
       route stripContent
       compile $ do
         body <- fmap itemBody templateBodyCompiler
@@ -62,11 +64,12 @@ main = do
           >>= (fmap (take 100) . recentFirst)
           >>= applyTemplateList body (postCtx tags <> bodyField "posts")
           >>= makeItem
-          >>= loadAndApplyTemplate "templates/default.html" (siteCtx tags)
+          >>= loadAndApplyTemplate "templates/default.html" ctx
           >>= relativizeUrls
           >>= deIndexUrls
 
     match postsPattern $ do
+      let ctx = constField "page-blog" "" <> siteCtx tags
       route
         $               directorizeDate
         `composeRoutes` stripContent
@@ -81,26 +84,28 @@ main = do
             $ dropMore compiled
         _ <- saveSnapshot "content" full
         _ <- saveSnapshot "teaser" teaser
-        loadAndApplyTemplate "templates/default.html" (siteCtx tags) full
+        loadAndApplyTemplate "templates/default.html" ctx full
           >>= relativizeUrls
           >>= deIndexUrls
 
     match "content/about/index.md" $ do
+      let ctx = constField "page-about" "" <> siteCtx tags
       route $ stripContent `composeRoutes` setExtension "html"
       compile
         $   pandocCompiler
-        >>= loadAndApplyTemplate "templates/static.html"  (siteCtx tags)
-        >>= loadAndApplyTemplate "templates/default.html" (siteCtx tags)
+        >>= loadAndApplyTemplate "templates/static.html"  ctx
+        >>= loadAndApplyTemplate "templates/default.html" ctx
         >>= relativizeUrls
         >>= deIndexUrls
 
     create ["archive/index.html"] $ do
+      let ctx = constField "page-archive" "" <> siteCtx tags
       route idRoute
       compile $ do
         let archiveCtx =
               field "posts" (\_ -> postList postsPattern tags recentFirst)
                 <> constField "title" "Blog Archive"
-                <> siteCtx tags
+                <> ctx
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" archiveCtx
           >>= loadAndApplyTemplate "templates/default.html"    archiveCtx
