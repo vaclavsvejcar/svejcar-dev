@@ -108,6 +108,7 @@ aside > section.about {
 }
 
 aside > nav {
+  margin-top: 50px;
   text-align: center;
   font-size: 0.9em;
 
@@ -126,8 +127,10 @@ aside > nav {
       > a:visited {
         color: $color-light-2;
         padding: 5px 10px;
+        transition: color 100ms ease;
 
-        &.active {
+        &.active,
+        &:hover {
           color: $color-light-1;
         }
       }
@@ -139,8 +142,32 @@ aside > nav {
   }
 }
 
+aside > ul.social-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  font-size: 2em;
+  text-align: center;
+
+  > li {
+    display: inline-block;
+
+    > a,
+    > a:visited {
+      padding: 0 5px;
+      color: $color-light-2;
+      transition: color 100ms ease;
+    }
+
+    > a:hover {
+      color: $color-light-1;
+    }
+  }
+}
+
 aside > .tag-cloud {
-  margin-top: 100px;
+  margin-top: 50px;
   text-align: center;
   text-transform: uppercase;
 
