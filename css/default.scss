@@ -79,8 +79,8 @@ aside {
 aside > section.about {
   margin-bottom: 25px;
 
-  > h1,
-  > h2 {
+  > a > h1,
+  > a > h2 {
     margin: 0;
     padding: 0;
     text-align: center;
@@ -88,7 +88,7 @@ aside > section.about {
     font-weight: normal;
   }
 
-  > img {
+  > a > img {
     display: block;
     margin: 0 auto 25px auto;
     width: 150px;
@@ -97,11 +97,11 @@ aside > section.about {
     border-radius: 100%;
   }
 
-  > h1 {
+  > a > h1 {
     font-size: 2em;
   }
 
-  > h2 {
+  > a > h2 {
     color: $color-light-2;
     font-size: 1em;
   }
@@ -181,6 +181,7 @@ aside > .tag-cloud {
 
       > a {
         color: $color-light-2;
+        transition: color 100ms ease;
 
         &:hover {
           color: $color-light-1;

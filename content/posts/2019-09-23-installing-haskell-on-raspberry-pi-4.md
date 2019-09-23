@@ -49,13 +49,13 @@ This probably means a GHC bindist has not yet been added for OS key 'linux-armv7
 Supported versions: ghc-7.10.2, ghc-7.10.3, ghc-8.0.1, ghc-8.0.2, ghc-8.2.1, ghc-8.2.2, ghc-8.6.3
 ```
 
-I really wasn't interested to custom build proper _GHC_ version from sources, but you can force _GHC_ version by adding below shown argument to any `stack` command call, so I decided to force version `8.6.3` instead of `8.6.5`, which is unavailable.
+I really wasn't interested to custom build proper _GHC_ version from sources, but you can force _GHC_ version by adding below shown argument to any `stack` command call, so I decided to force version `8.6.3` instead of `8.6.5`, which is unavailable. Fortunately, I haven't faced any compatibility issues.
 
 ```bash
 $ stack setup --compiler ghc-8.6.3
 ```
 
-Alternative would be to use older version of _Stack_ resolver, but that might not be desired, as choosing other versions of used dependencies might break your code.
+Alternative would be to use older version of _Stack_ resolver, but that might not be an option, cause the last one for _GHC_ version `8.6.3` is [lts-13.11] and some of the packages might be present in too old version.
 
 ### Solving troubles with GHC
 After running the `stack setup` from previous step, you might face some errors related to missing [LVVM] dependencies. In my case, _GHC_ version `8.6.3` requires following dependency to be installed:
@@ -108,6 +108,7 @@ And that's pretty much all. Now you should be able to build and run any _Haskell
 [Haskell]: https://www.haskell.org/
 [ARMv7]: https://en.wikipedia.org/wiki/ARM_architecture
 [GHC]: https://www.haskell.org/ghc/
+[lts-13.11]: https://www.stackage.org/lts-13.11
 [lts-14.6]: https://www.stackage.org/lts-14.6
 [LVVM]: https://llvm.org/
 [Stack]: https://docs.haskellstack.org/en/stable/README/
