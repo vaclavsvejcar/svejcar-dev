@@ -58,7 +58,7 @@ $ stack setup --compiler ghc-8.6.3
 Alternative would be to use older version of _Stack_ resolver, but that might not be an option, cause the last one for _GHC_ version `8.6.3` is [lts-13.11] and some of the packages might be present in too old version.
 
 ### Solving troubles with GHC
-After running the `stack setup` from previous step, you might face some errors related to missing [LVVM] dependencies. In my case, _GHC_ version `8.6.3` requires following dependency to be installed:
+After running the `stack setup` from previous step, you might face some errors related to missing [LLVM] dependencies. In my case, _GHC_ version `8.6.3` requires following dependency to be installed:
 
 ```bash
 $ sudo aptitude install llvm-6.0-dev
@@ -110,7 +110,7 @@ And that's pretty much all. Now you should be able to build and run any _Haskell
 [GHC]: https://www.haskell.org/ghc/
 [lts-13.11]: https://www.stackage.org/lts-13.11
 [lts-14.6]: https://www.stackage.org/lts-14.6
-[LVVM]: https://llvm.org/
+[LLVM]: https://llvm.org/
 [Stack]: https://docs.haskellstack.org/en/stable/README/
 [Stackage]: https://www.stackage.org/
 [Tier 1]: https://gitlab.haskell.org/ghc/ghc/wikis/platforms#tier-1-platforms
