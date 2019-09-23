@@ -63,6 +63,10 @@ body > header {
 
   background: $color-dark-primary;
   font-size: 30px;
+
+  > a {
+    display: block;
+  }
 }
 
 aside {
@@ -247,12 +251,32 @@ footer {
   }
 
   aside {
+    width: 100%;
     margin-top: $size-header-height;
-    margin-left: -$size-aside-width;
+    margin-left: -100%;
     transition: margin-left ease 0.2s;
 
     &.visible {
       margin-left: 0;
+    }
+  }
+
+  aside > section.about {
+    > a > img {
+      display: none;
+    }
+  }
+
+  aside > nav {
+    > ul {
+      > li {
+        display: block;
+
+        > a {
+          display: block;
+          font-size: 2em;
+        }
+      }
     }
   }
 
