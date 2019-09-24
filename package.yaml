@@ -22,7 +22,7 @@ library:
     - blaze-html
     - bytestring
     - hakyll
-    - hjsmin
+    - language-javascript
     - text
 
 executables:

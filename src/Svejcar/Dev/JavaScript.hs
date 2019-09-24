@@ -13,15 +13,15 @@ module Svejcar.Dev.JavaScript
   )
 where
 
+import           Data.ByteString.Builder        ( toLazyByteString )
 import qualified Data.ByteString.Lazy.Char8    as LB
-import qualified Data.Text                     as T
-import qualified Data.Text.Encoding            as E
+import           Language.JavaScript.Parser
+import           Language.JavaScript.Process.Minify
 import           Hakyll
-import qualified Text.Jasmine                  as J
 
--- | Minifies JavaScript content using /hjsmin/ library.
+-- | Minifies JavaScript content.
 compressJsCompiler :: Compiler (Item String)
 compressJsCompiler = fmap minify <$> getResourceString
  where
   minify :: String -> String
-  minify src = LB.unpack $ J.minify $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
+  minify = LB.unpack . toLazyByteString . renderJS . minifyJS . readJs
