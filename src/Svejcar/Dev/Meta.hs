@@ -9,7 +9,10 @@ Portability : portable
 Module providing functions for obtaining additional meta info about the build
 itself.
 -}
-module Svejcar.Dev.Meta where
+module Svejcar.Dev.Meta
+  ( buildVersion
+  )
+where
 
 import           Paths_svejcar_dev              ( version )
 import           Data.Version                   ( showVersion )

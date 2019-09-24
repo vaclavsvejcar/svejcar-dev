@@ -11,7 +11,8 @@ Module providing functions and data structures for handling site configuration.
 module Svejcar.Dev.Config where
 
 -- | Site configuration.
-data SiteConfig = SiteConfig
+data SiteConfig =
+  SiteConfig
     { gaId :: String     -- ^ /Google Analytics/ unique ID
     , siteRoot :: String -- ^ Root URL of the site
     }
