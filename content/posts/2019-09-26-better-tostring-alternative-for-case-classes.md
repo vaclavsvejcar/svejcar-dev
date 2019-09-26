@@ -1,9 +1,9 @@
 ---
-title: Better 'toString' for case classes
+title: Better 'toString' alternative for case classes
 tags: scala, cats, shapeless
 ---
 
-One of great advantages of [Scala]'s [case classes][case class] is that compared to regular classes, it automatically generates buch of useful methods, such as `equals`, `hashCode` and `toString`. The generated `toString` method is nice, because it allows to see the values of _case class_ instance fields:
+One of the great advantages of [Scala]'s [case classes][case class] is that compared to regular classes, bunch of useful methods, such as `equals`, `hashCode` and `toString`, are automatically generated. The generated `toString` method is nice, because it includes actual field values of the displayed case class.
 
 ```scala
 case class Test(name: String, value: Int) 
@@ -12,7 +12,7 @@ val test = Test("The Answer", 42)
 test.toString   // Test(The Answer,42)
 ```
 
-The above output is good, but for case classes with many fields, nested structures or just lots of similar fields, it can become not so clear which value belongs to which field.
+The above output is good, but for case classes with many fields, nested structures or just lots of similar fields, it can become not so clear which value belongs to which field, as shown below:
 
 ```scala
 case class Config(poolSize: Int, maxConnections: Int, batchSize: Int, intervalLength: Int, maxTimeout: Int) 
@@ -21,7 +21,7 @@ val config = Config(45, 23, 10, 10, 5000)
 config.toString // Config(45,23,10,10,5000)
 ```
 
-Such output is no longer that obvious. Wouldn't it help if we could also see field names for these values? In this article, I'll show how this can be done without much boilerplate using [Cats] and [Kittens] libraries.
+Wouldn't it help if we could also see field names for these values? In this article, I'll show how this can be done without much boilerplate using [Cats] and [Kittens] libraries.
 
 <!-- MORE -->
 
@@ -58,10 +58,10 @@ val config = Config(...)
 config.show // Config(poolSize=45, maxConnections=23, batchSize=10, intervalLength=10, maxTimeout=5000)
 ```
 
-This results much better looking output, but the implementation is really cumbersome and definitely something we don't want to do in real-world codebase. But there's way how to generate all this stuff automatically.
+This results in much better looking output, but the implementation is really cumbersome and definitely something we don't want to do in real-world codebase. But there's way how to generate all this stuff automatically.
 
 ## Automatic derivation of Show typeclass
-Here comes the [Kittens] library to the rescue. It offers automatic derivation for typeclasses from [Cats] using [Shapeless], meaning it can also automatically [derive instance of Show typeclass][derive show] for our case classes. One of the advantages of automatically derived `Show` instance is that it also renders case class field names:
+Here comes the [Kittens] library to the rescue. It offers automatic derivation of typeclasses from [Cats] using [Shapeless], meaning it can also automatically [derive instance of Show typeclass][derive show] for our case classes. One of the advantages of automatically derived `Show` instance is that it also renders case class field names:
 
 ```scala
 import cats._
@@ -74,7 +74,7 @@ val config = Config(...)
 config.show // Config(poolSize = 45, maxConnections = 23, batchSize = 10, intervalLength = 10, maxTimeout = 5000)
 ```
 
-This is exactly what we wanted to achieve, and this time without all that hand-written boilerplate code. [Kittens] calls this method of automatic derivation as _semi-auto_, as we still need to define the implicit value of `Show` instance on our own. There is also option to use _full-auto_ derivation:
+This is exactly what we wanted to achieve, and this time without all that hand-written boilerplate code. In [Kittens], this method of automatic derivation is called _semi-auto_, as we still need to define the implicit value of `Show` instance on our own. There is also option to use _full-auto_ derivation:
 
 ```scala
 import cats._
