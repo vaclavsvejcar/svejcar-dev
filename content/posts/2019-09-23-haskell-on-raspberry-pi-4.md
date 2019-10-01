@@ -9,14 +9,14 @@ Then the [Raspberry Pi 4B] came out, with option to have up to 4GB of RAM. So I 
 
 <!-- MORE -->
 
-## Before we begin
+# Before we begin
 First, we should talk about platforms supported by _GHC_. You should not face any trouble installing and running _GHC_ on your Windows/Linux/macOS machine, because these are [Tier 1] platforms, meaning that they are top priority for _GHC_ team and should have full support. On the other hand, _ARM_ architecture is [Tier 2], meaning that _GHC_ build might not be available for our platform in desired version, which was actually the biggest issue I faced. We'll talk about this later.
 
 Also worth mentioning that for my experimenting, I'm running official [Raspbian] distribution, meaning that I'm using _32bit_ architecture. If anyone will try this with some _64bit_ Linux distro, I'd gladly provide link here.
 
-## Installation steps
+# Installation steps
 
-### Increase SWAP size
+## Increase SWAP size
 Although 4GB of RAM _ought to be enough for anyone™_, I decided to increase the default value of _100MB_ to _1GB_, just in case.
 
 ```bash
@@ -26,7 +26,7 @@ $ sudo dphys-swapfile setup    # refresh with new settings
 $ sudo dphys-swapfile swapon   # re-enable swap
 ```
 
-### Install Stack
+## Install Stack
 This step will download current version of [Stack] for our architecture. 
 
 ```bash
@@ -39,7 +39,7 @@ It's also good to add path to dir `~/.local/bin` to `$PATH`, since this is the d
 export PATH="$PATH:~/.local/bin"
 ```
 
-### Setup Stack project
+## Setup Stack project
 Here comes the tricky part. As I mentioned above, because _ARM_ is _GHC Tier 2_ platform, there might not be _GHC_ version matching the [Stackage] resolver you use in your project. For example, my project used version [lts-14.6] that matches with _GHC 8.6.5_. However, when you try to build the project using `stack setup`, you might face following error:
 
 ```txt
@@ -57,7 +57,7 @@ $ stack setup --compiler ghc-8.6.3
 
 Alternative would be to use older version of _Stack_ resolver, but that might not be an option, cause the last one for _GHC_ version `8.6.3` is [lts-13.11] and some of the packages might be present in too old version.
 
-### Solving troubles with GHC
+## Solving troubles with GHC
 After running the `stack setup` from previous step, you might face some errors related to missing [LLVM] dependencies. In my case, _GHC_ version `8.6.3` requires following dependency to be installed:
 
 ```bash
@@ -99,7 +99,7 @@ Then add following content to the newly created file:
 ~/.stack/programs/arm-linux/ghc-8.6.3/bin/ghc-8.6.3-bin -opta-march=armv7-a $@
 ```
 
-## Enjoy
+# Enjoy
 And that's pretty much all. Now you should be able to build and run any _Haskell_ library or program, just prepare yourself that compilation times are still pretty much longer than on your laptop/PC.
 
 [Raspberry Pi 3B+]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/

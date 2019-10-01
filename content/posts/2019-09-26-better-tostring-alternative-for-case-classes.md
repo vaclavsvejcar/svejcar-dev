@@ -25,7 +25,7 @@ Wouldn't it help if we could also see field names for these values? In this arti
 
 <!-- MORE -->
 
-### Before we begin
+## Before we begin
 All code examples below assume that you have [Cats] and [Kittens] libraries imported into your project. You can do that by adding following lines to `build.sbt`:
 
 ```scala
@@ -37,7 +37,7 @@ libraryDependencies ++= Seq(
 
 This article also assumes that you're familiar with concept of [typeclasses] and you have and least basic knowledge of the [Cats] library.
 
-## Using Show typeclass
+# Using Show typeclass
 Before deciding how to eventually implement the `toString` method to match our requirements, we should discuss if `toString` is really the way we want to use. Implementing it for our case classes is fine, but what if we want to define it for case class from 3rd party libraries? Extending such case class, even if possible, is obviously not the most nice way.
 
 So instead of overriding the `toString` method, we will use the [Show typeclass] from [Cats] library. It allows us to implement instance of `Show` typeclass for any case class, either ours or from 3rd party library. Let's see how we can implement very dummy version for previously shown `Config` case class, that will also print field names.
@@ -60,7 +60,7 @@ config.show // Config(poolSize=45, maxConnections=23, batchSize=10, intervalLeng
 
 This results in much better looking output, but the implementation is really cumbersome and definitely something we don't want to do in real-world codebase. But there's way how to generate all this stuff automatically.
 
-## Automatic derivation of Show typeclass
+# Automatic derivation of Show typeclass
 Here comes the [Kittens] library to the rescue. It offers automatic derivation of typeclasses from [Cats] using [Shapeless], meaning it can also automatically [derive instance of Show typeclass][derive show] for our case classes. One of the advantages of automatically derived `Show` instance is that it also renders case class field names:
 
 ```scala

@@ -37,24 +37,27 @@
 }
 
 .blog-post .post-content {
-  font-size: .9em;
+  font-size: 0.9em;
   line-height: 150%;
 
-  h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     margin-top: 30px;
   }
 
-  h2 {
-    font-size: 1.6em;
+  h1 {
+    font-size: 1.7em;
     color: #212121;
   }
 
-  h3 {
-    font-size: 1.3em;
+  h2 {
+    font-size: 1.4em;
     color: #424242;
   }
 
-  h4 {
+  h3 {
     font-size: 1.1em;
     color: #616161;
   }
