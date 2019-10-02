@@ -3,22 +3,16 @@ import           Control.Monad                  ( filterM
                                                 , when
                                                 , (>=>)
                                                 )
-import           Data.List                      ( intersperse
-                                                , isSuffixOf
-                                                )
-import           Data.List.Split                ( splitOn )
 import           Hakyll                  hiding ( tagCloudField )
 import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
 import           Site.Compilers
-import           Site.Config
-import           Site.Meta                      ( buildVersion )
-import           Site.Tags
+import           Site.Config                    ( SiteConfig(..) )
+import           Site.Core
 import           System.Console.Pretty          ( Color(..)
                                                 , color
                                                 )
-import           System.FilePath                ( splitExtension )
 
 siteConfig :: SiteConfig
 siteConfig =
@@ -45,19 +39,21 @@ main = do
 
     tags <- buildTags postsPattern (fromCapture "tags/*/index.html")
 
+    let siteCtx'  = siteCtx siteConfig tags
+    let postCtx'  = postCtx siteConfig tags
+    let postList' = postList postsPattern siteConfig tags
+
     tagsRules tags $ \tag _ -> do
       route idRoute
       compile $ do
-        list <- postList
-          postsPattern
-          tags
+        list <- postList'
           (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
         let ctx =
               constField "tag" tag
                 <> constField "title"     ("Posts for tag: " ++ tag)
                 <> constField "posts"     list
                 <> constField "page-blog" ""
-                <> siteCtx tags
+                <> siteCtx'
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" ctx
           >>= loadAndApplyTemplate "templates/default.html"    ctx
@@ -65,32 +61,29 @@ main = do
           >>= deIndexUrls
 
     match "content/index.html" $ do
-      let ctx = constField "page-blog" "" <> siteCtx tags
+      let ctx = constField "page-blog" "" <> siteCtx'
       route stripContent
       compile $ do
         body <- fmap itemBody templateBodyCompiler
         loadAllSnapshots postsPattern "teaser"
           >>= (fmap (take 100) . recentFirst)
-          >>= applyTemplateList body (postCtx tags <> bodyField "posts")
+          >>= applyTemplateList body (postCtx' <> bodyField "posts")
           >>= makeItem
           >>= loadAndApplyTemplate "templates/default.html" ctx
           >>= relativizeUrls
           >>= deIndexUrls
 
     match postsPattern $ do
-      let ctx = constField "page-blog" "" <> siteCtx tags
+      let ctx = constField "page-blog" "" <> siteCtx'
       route
         $               directorizeDate
         `composeRoutes` stripContent
         `composeRoutes` setExtension "html"
       compile $ do
         compiled <- pandocCompiler
-        full     <- loadAndApplyTemplate "templates/post.html"
-                                         (postCtx tags)
-                                         compiled
-        teaser <-
-          loadAndApplyTemplate "templates/post-teaser.html" (postCtx tags)
-            $ dropMore compiled
+        full     <- loadAndApplyTemplate "templates/post.html" postCtx' compiled
+        teaser   <- loadAndApplyTemplate "templates/post-teaser.html" postCtx'
+          $ dropMore compiled
         _ <- saveSnapshot "content" full
         _ <- saveSnapshot "teaser" teaser
         loadAndApplyTemplate "templates/default.html" ctx full
@@ -98,7 +91,7 @@ main = do
           >>= deIndexUrls
 
     match "content/about/index.md" $ do
-      let ctx = constField "page-about" "" <> siteCtx tags
+      let ctx = constField "page-about" "" <> siteCtx'
       route $ stripContent `composeRoutes` setExtension "html"
       compile
         $   pandocCompiler
@@ -108,11 +101,11 @@ main = do
         >>= deIndexUrls
 
     create ["archive/index.html"] $ do
-      let ctx = constField "page-archive" "" <> siteCtx tags
+      let ctx = constField "page-archive" "" <> siteCtx'
       route idRoute
       compile $ do
         let archiveCtx =
-              field "posts" (\_ -> postList postsPattern tags recentFirst)
+              field "posts" (\_ -> postList' recentFirst)
                 <> constField "title" "Blog Archive"
                 <> ctx
         makeItem ""
@@ -139,55 +132,3 @@ main = do
       compile compressJsCompiler
 
     match "templates/*" $ compile templateBodyCompiler
-
-postList
-  :: Pattern
-  -> Tags
-  -> ([Item String] -> Compiler [Item String])
-  -> Compiler String
-postList postsPattern tags sortFilter = do
-  posts   <- sortFilter =<< loadAll postsPattern
-  itemTpl <- loadBody "templates/post-link.html"
-  applyTemplateList itemTpl (postCtx tags) posts
-
-stripContent :: Routes
-stripContent = gsubRoute "content/" $ const ""
-
-directorizeDate :: Routes
-directorizeDate = customRoute (directorize . toFilePath)
- where
-  directorize path = dirs ++ "/index" ++ ext
-   where
-    (dirs, ext) =
-      splitExtension
-        $  concat
-        $  intersperse "/" date
-        ++ ["/"]
-        ++ intersperse "-" rest
-    (date, rest) = splitAt 3 $ splitOn "-" path
-
-stripIndex :: String -> String
-stripIndex url =
-  if "index.html" `isSuffixOf` url && elem (head url) ("/." :: String)
-    then take (length url - 10) url
-    else url
-
-deIndexUrls :: Item String -> Compiler (Item String)
-deIndexUrls item = return $ fmap (withUrls stripIndex) item
-
-dropMore :: Item String -> Item String
-dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
-
-siteCtx :: Tags -> Context String
-siteCtx tags =
-  tagCloudField "cloud" 60 150 tags
-    <> constField "buildVersion" buildVersion
-    <> constField "gaId"         (gaId siteConfig)
-    <> defaultContext
-
-postCtx :: Tags -> Context String
-postCtx tags =
-  dateField "date" "%e %B %Y"
-    <> dateField "datetime" "%Y-%m-%d"
-    <> tagLinks getTags "tags" tags
-    <> siteCtx tags
