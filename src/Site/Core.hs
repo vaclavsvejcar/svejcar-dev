@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Site.Core where
 
+import           Control.Monad                  ( when )
 import           Data.List                      ( intersperse
                                                 , isSuffixOf
                                                 )
@@ -9,7 +10,34 @@ import           Hakyll                  hiding ( tagCloudField )
 import           Site.Config
 import           Site.Meta                      ( buildVersion )
 import           Site.Tags
+import           Site.Types                     ( RenderMode(..) )
+import           System.Environment             ( getArgs
+                                                , withArgs
+                                                )
 import           System.FilePath                ( splitExtension )
+import           System.Console.Pretty          ( Color(..)
+                                                , color
+                                                )
+runSite :: (RenderMode -> Rules ()) -> IO ()
+runSite rules = do
+  args <- getArgs
+  let draftMode  = length args == 2 && args !! 1 == "draft"
+      hakyllConf = if draftMode
+        then defaultConfiguration { destinationDirectory = "_draft"
+                                  , storeDirectory       = "_draft_cache"
+                                  , tmpDirectory         = "_draft_cache/tmp"
+                                  }
+        else defaultConfiguration
+      mode  = if draftMode then Draft else Prod
+      args' = take 1 args
+
+  when draftMode
+    $ putStrLn (color Yellow "!!!!!!!!! RUNNING IN DRAFT MODE !!!!!!!!!")
+  withArgs args' $ hakyllWith hakyllConf (rules mode)
+
+postsPattern :: RenderMode -> Pattern
+postsPattern Draft = "content/posts/*.md" .||. "content/drafts/*.md"
+postsPattern Prod  = "content/posts/*.md"
 
 postList
   :: Pattern
@@ -17,8 +45,8 @@ postList
   -> Tags
   -> ([Item String] -> Compiler [Item String])
   -> Compiler String
-postList postsPattern config tags sortFilter = do
-  posts   <- sortFilter =<< loadAll postsPattern
+postList postsPattern' config tags sortFilter = do
+  posts   <- sortFilter =<< loadAll postsPattern'
   itemTpl <- loadBody "templates/post-link.html"
   applyTemplateList itemTpl (postCtx config tags) posts
 
