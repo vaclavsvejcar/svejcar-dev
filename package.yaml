@@ -31,5 +31,6 @@ executables:
       - hakyll
       - hakyll-sass
       - language-javascript
+      - pretty-terminal
       - split
       - text

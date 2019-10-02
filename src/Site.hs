@@ -15,6 +15,9 @@ import           Site.Compilers
 import           Site.Config
 import           Site.Meta                      ( buildVersion )
 import           Site.Tags
+import           System.Console.Pretty          ( Color(..)
+                                                , color
+                                                )
 import           System.FilePath                ( splitExtension )
 
 siteConfig :: SiteConfig
@@ -36,7 +39,8 @@ main = do
         else "content/posts/*.md"
       args' = take 1 args
 
-  when draftMode $ putStrLn "!!!!!!!!! RUNNING IN DRAFT MODE !!!!!!!!!"
+  when draftMode
+    $ putStrLn (color Yellow "!!!!!!!!! RUNNING IN DRAFT MODE !!!!!!!!!")
   withArgs args' $ hakyllWith hakyllConf $ do
 
     tags <- buildTags postsPattern (fromCapture "tags/*/index.html")
