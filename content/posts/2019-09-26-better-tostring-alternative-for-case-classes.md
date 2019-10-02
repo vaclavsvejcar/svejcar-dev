@@ -89,12 +89,37 @@ config.show // Config(poolSize = 45, maxConnections = 23, batchSize = 10, interv
 ```
 When using the _full-auto_ mode, we don't even need to define the `Show` instance as _implicit value_, so there's less boilerplate. However, we lose some control over where and what is automatically derived. For that reason, I'd personally recommend using the _semi-auto_ derivation instead. You can also check [Kittens] documentation for all available [derivation modes].
 
+# Changes in Scala 2.13
+The above solution is based on the fact that in [Scala 2.12] and older, you can easily get field values of case class using the [productIterator] method (since each _case class_ inherits from the `Product` trait), but there's no nice way how to get field names. However, in [Scala 2.13], there's new method [productElementNames], that returns collection of field names. Using this new method, we can write really simple implementation of `toString` alternative, that will return same result as the above solution using [Kittens]:
+
+```scala
+def show(product: Product): String = {
+  val className = product.productPrefix
+  val fieldNames = product.productElementNames.toList
+  val fieldValues = product.productIterator.toList
+  val fields = fieldNames.zip(fieldValues).map { case (name, value) => s"$name = $value"}
+  
+  fields.mkString(s"$className(", ", ", ")")
+}
+
+case class Test(label: String, value: Int)
+val test = Test("The Answer", 42)
+
+show(test)   // Test(label = The Answer, value = 42)
+```
+
+This solution might be preferred if you dont need compatibility with older _Scala_ versions, as it doesn't need any external libraries to be used.
+
 [Cats]: https://typelevel.org/cats/
 [case class]: https://docs.scala-lang.org/tour/case-classes.html
 [derive show]: https://github.com/typelevel/kittens#derive-show
 [derivation modes]: https://github.com/typelevel/kittens#three-modes-of-derivation
 [Kittens]: https://github.com/typelevel/kittens
+[productElementNames]: https://www.scala-lang.org/api/2.13.0/scala/Product.html#productElementNames:Iterator[String]
+[productIterator]: https://www.scala-lang.org/api/2.12.8/scala/Product.html#productIterator:Iterator[Any]
 [Scala]: https://www.scala-lang.org/
+[Scala 2.12]: https://www.scala-lang.org/news/2.12.0/
+[Scala 2.13]: https://www.scala-lang.org/news/2.13.0/
 [Shapeless]: https://github.com/milessabin/shapeless
 [Show typeclass]: https://typelevel.org/cats/typeclasses/show.html
 [typeclasses]: https://scalac.io/typeclasses-in-scala/
