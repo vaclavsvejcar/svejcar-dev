@@ -1,5 +1,5 @@
 name: svejcar-dev
-version: 1.2.0
+version: 1.3.0
 github: "vaclavsvejcar/svejcar-dev"
 license: Apache-2.0
 author: "Vaclav Svejcar"
@@ -16,26 +16,20 @@ ghc-options:
   - -Wincomplete-uni-patterns
   - -Wredundant-constraints
 
-library:
-  source-dirs: src
-  dependencies:
-    - blaze-html
-    - bytestring
-    - hakyll
-    - language-javascript
-    - text
-
 executables:
   site:
-    main: Main.hs
-    source-dirs: app
+    main: Site.hs
+    source-dirs: src
     ghc-options:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
+      - blaze-html
+      - bytestring
       - filepath
       - hakyll
       - hakyll-sass
+      - language-javascript
       - split
-      - svejcar-dev
+      - text

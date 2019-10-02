@@ -1,5 +1,5 @@
 {-|
-Module      : Svejcar.Dev.Meta
+Module      : Site.Meta
 Description : Provides additional info about build.
 Copyright   : (c) 2019 Vaclav Svejcar
 
@@ -9,7 +9,7 @@ Portability : portable
 Module providing functions for obtaining additional meta info about the build
 itself.
 -}
-module Svejcar.Dev.Meta
+module Site.Meta
   ( buildVersion
   )
 where

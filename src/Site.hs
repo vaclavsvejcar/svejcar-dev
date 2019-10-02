@@ -7,15 +7,15 @@ import           Data.List                      ( intersperse
                                                 , isSuffixOf
                                                 )
 import           Data.List.Split                ( splitOn )
-import           Hakyll
+import           Hakyll                  hiding ( tagCloudField )
 import           Hakyll.Web.Sass                ( sassCompiler )
 import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
-import           Svejcar.Dev.Config
-import           Svejcar.Dev.JavaScript
-import           Svejcar.Dev.Meta               ( buildVersion )
-import qualified Svejcar.Dev.Tags              as SDT
+import           Site.Compilers
+import           Site.Config
+import           Site.Meta                      ( buildVersion )
+import           Site.Tags
 import           System.FilePath                ( splitExtension )
 
 siteConfig :: SiteConfig
@@ -177,7 +177,7 @@ dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
 
 siteCtx :: Tags -> Context String
 siteCtx tags =
-  SDT.tagCloudField "cloud" 60 150 tags
+  tagCloudField "cloud" 60 150 tags
     <> constField "buildVersion" buildVersion
     <> constField "gaId"         (gaId siteConfig)
     <> defaultContext
@@ -186,5 +186,5 @@ postCtx :: Tags -> Context String
 postCtx tags =
   dateField "date" "%e %B %Y"
     <> dateField "datetime" "%Y-%m-%d"
-    <> SDT.tagLinks getTags "tags" tags
+    <> tagLinks getTags "tags" tags
     <> siteCtx tags

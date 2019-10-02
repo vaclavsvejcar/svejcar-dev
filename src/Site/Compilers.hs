@@ -1,20 +1,20 @@
 {-|
-Module      : Svejcar.Dev.JavaScript
-Description : Functions related to JavaScript handling.
+Module      : Site.Compilers
+Description : Extra compilers for Hakyll
 Copyright   : (c) 2019 Vaclav Svejcar
 
 Stability   : experimental
 Portability : portable
 
-Module providing functions for handling and manipulating JavaScript data.
+Module providing extra compilers for Hakyll.
 -}
-module Svejcar.Dev.JavaScript
+module Site.Compilers
   ( compressJsCompiler
   )
 where
 
 import           Data.ByteString.Builder        ( toLazyByteString )
-import qualified Data.ByteString.Lazy.Char8    as LB
+import qualified Data.ByteString.Lazy.Char8    as CL
 import           Language.JavaScript.Parser
 import           Language.JavaScript.Process.Minify
 import           Hakyll
@@ -24,4 +24,4 @@ compressJsCompiler :: Compiler (Item String)
 compressJsCompiler = fmap minify <$> getResourceString
  where
   minify :: String -> String
-  minify = LB.unpack . toLazyByteString . renderJS . minifyJS . readJs
+  minify = CL.unpack . toLazyByteString . renderJS . minifyJS . readJs

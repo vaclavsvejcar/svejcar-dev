@@ -1,10 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Svejcar.Dev.Tags where
+module Site.Tags
+  ( tagLinks
+  , tagCloud
+  , tagCloudField
+  )
+where
 
 import           Control.Monad                  ( forM )
 import           Data.List                      ( sort )
 import           Data.Maybe                     ( catMaybes )
-import           Hakyll
+import           Hakyll                  hiding ( tagCloudField )
 import           Text.Blaze.Html                ( preEscapedToHtml
                                                 , toHtml
                                                 , toValue
