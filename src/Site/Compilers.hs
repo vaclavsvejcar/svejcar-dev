@@ -10,6 +10,7 @@ Module providing extra compilers for Hakyll.
 -}
 module Site.Compilers
   ( compressJsCompiler
+  , sassCompiler
   )
 where
 
@@ -18,6 +19,7 @@ import qualified Data.ByteString.Lazy.Char8    as CL
 import           Language.JavaScript.Parser
 import           Language.JavaScript.Process.Minify
 import           Hakyll
+import           Hakyll.Web.Sass                ( sassCompiler )
 
 -- | Minifies JavaScript content.
 compressJsCompiler :: Compiler (Item String)

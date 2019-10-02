@@ -8,7 +8,6 @@ import           Data.List                      ( intersperse
                                                 )
 import           Data.List.Split                ( splitOn )
 import           Hakyll                  hiding ( tagCloudField )
-import           Hakyll.Web.Sass                ( sassCompiler )
 import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
