@@ -34,3 +34,4 @@ executables:
       - pretty-terminal
       - split
       - text
+      - time

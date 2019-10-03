@@ -6,6 +6,7 @@ import           Data.List                      ( intersperse
                                                 , isSuffixOf
                                                 )
 import           Data.List.Split                ( splitOn )
+import           Data.Time
 import           Hakyll                  hiding ( tagCloudField )
 import           Site.Config
 import           Site.Meta                      ( buildVersion )
@@ -81,9 +82,11 @@ dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
 siteCtx :: SiteConfig -> Tags -> Context String
 siteCtx config tags =
   tagCloudField "cloud" 60 150 tags
+    <> constField "buildTime"    formattedTime
     <> constField "buildVersion" buildVersion
     <> constField "gaId"         (gaId config)
     <> defaultContext
+  where formattedTime = formatTime defaultTimeLocale "%F %T UTC" (builtAt config)
 
 postCtx :: SiteConfig -> Tags -> Context String
 postCtx config tags =
@@ -91,3 +94,6 @@ postCtx config tags =
     <> dateField "datetime" "%Y-%m-%d"
     <> tagLinks getTags "tags" tags
     <> siteCtx config tags
+
+(+||+) :: Routes -> Routes -> Routes
+(+||+) = composeRoutes

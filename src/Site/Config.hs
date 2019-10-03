@@ -10,10 +10,13 @@ Module providing functions and data structures for handling site configuration.
 -}
 module Site.Config where
 
+import Data.Time (UTCTime(..))
+
 -- | Site configuration.
 data SiteConfig =
   SiteConfig
-    { gaId :: String     -- ^ /Google Analytics/ unique ID
+    { builtAt :: UTCTime
+    , gaId :: String     -- ^ /Google Analytics/ unique ID
     , siteRoot :: String -- ^ Root URL of the site
     }
     
