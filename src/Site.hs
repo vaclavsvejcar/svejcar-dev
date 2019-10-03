@@ -97,15 +97,15 @@ main = do
           >>= relativizeUrls
           >>= deIndexUrls
 
-    match ("images/*.jpg" .||. "css/*.css") $ do
+    match ("assets/images/*.jpg" .||. "assets/css/*.css") $ do
       route idRoute
       compile copyFileCompiler
 
-    match "css/*.scss" $ do
+    match "assets/css/*.scss" $ do
       route $ setExtension "css"
       compile (fmap compressCss <$> sassCompiler)
 
-    match "js/*.js" $ do
+    match "assets/js/*.js" $ do
       route idRoute
       compile compressJsCompiler
 
