@@ -19,7 +19,6 @@ import qualified Data.ByteString.Lazy.Char8    as CL
 import           Language.JavaScript.Parser
 import           Language.JavaScript.Process.Minify
 import           Hakyll
-import           Hakyll.Web.Sass                ( sassCompiler )
 
 -- | Minifies JavaScript content.
 compressJsCompiler :: Compiler (Item String)
@@ -27,3 +26,10 @@ compressJsCompiler = fmap minify <$> getResourceString
  where
   minify :: String -> String
   minify = CL.unpack . toLazyByteString . renderJS . minifyJS . readJs
+
+sassCompiler :: Compiler (Item String)
+sassCompiler =
+  loadBody (fromFilePath "assets/scss/screen.scss")
+    >>= makeItem
+    >>= withItemBody (unixFilter "sassc" args)
+  where args = ["-s", "-I", "assets/scss/"]

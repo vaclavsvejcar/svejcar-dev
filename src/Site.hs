@@ -97,13 +97,18 @@ main = do
           >>= relativizeUrls
           >>= deIndexUrls
 
-    match ("assets/images/*.jpg" .||. "assets/css/*.css") $ do
+    match "assets/images/*.jpg" $ do
       route idRoute
       compile copyFileCompiler
 
-    match "assets/css/*.scss" $ do
-      route $ setExtension "css"
-      compile (fmap compressCss <$> sassCompiler)
+    match "assets/scss/**.scss" $ compile getResourceBody
+
+    scssDependencies <- makePatternDependency "assets/scss/**.scss"
+    rulesExtraDependencies [scssDependencies]
+      $ create ["assets/css/screen.css"]
+      $ do
+          route idRoute
+          compile (fmap compressCss <$> sassCompiler)
 
     match "assets/js/*.js" $ do
       route idRoute

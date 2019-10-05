@@ -29,7 +29,6 @@ executables:
       - bytestring
       - filepath
       - hakyll
-      - hakyll-sass
       - language-javascript
       - pretty-terminal
       - split
