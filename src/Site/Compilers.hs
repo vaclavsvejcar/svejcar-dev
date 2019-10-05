@@ -19,6 +19,8 @@ import qualified Data.ByteString.Lazy.Char8    as CL
 import           Language.JavaScript.Parser
 import           Language.JavaScript.Process.Minify
 import           Hakyll
+import           Hakyll.Web.Sass         hiding ( sassCompiler )
+
 
 -- | Minifies JavaScript content.
 compressJsCompiler :: Compiler (Item String)
@@ -27,9 +29,10 @@ compressJsCompiler = fmap minify <$> getResourceString
   minify :: String -> String
   minify = CL.unpack . toLazyByteString . renderJS . minifyJS . readJs
 
-sassCompiler :: Compiler (Item String)
-sassCompiler =
-  loadBody (fromFilePath "assets/scss/screen.scss")
-    >>= makeItem
-    >>= withItemBody (unixFilter "sassc" args)
-  where args = ["-s", "-I", "assets/scss/"]
+-- | Compiles SASS file(s) into plain CSS
+sassCompiler :: Maybe [FilePath] -> Compiler (Item String)
+sassCompiler includePaths = getResourceBody >>= renderSassWith opts
+ where
+  opts = sassDefConfig { sassIncludePaths = includePaths
+                       , sassOutputStyle  = SassStyleCompressed
+                       }
