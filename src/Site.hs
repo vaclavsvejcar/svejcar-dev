@@ -102,7 +102,7 @@ main = do
       $ match "assets/css/screen.scss"
       $ do
           route $ setExtension "css"
-          compile $ sassCompiler (Just ["assets/css/"])
+          compile (fmap compressCss <$> sassCompiler)
 
     match "assets/images/*.jpg" $ do
       route idRoute
