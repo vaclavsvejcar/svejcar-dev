@@ -24,12 +24,12 @@ siteConfig mode builtAt' = SiteConfig { builtAt  = builtAt'
 main :: IO ()
 main = do
   builtAt' <- getCurrentTime
-  runSite $ \siteMode -> do
-    let postsPattern' = postsPattern siteMode
+  runSite $ \mode -> do
+    let postsPattern' = postsPattern mode
 
     tags <- buildTags postsPattern' (fromCapture "tags/*/index.html")
 
-    let siteConfig' = siteConfig siteMode builtAt'
+    let siteConfig' = siteConfig mode builtAt'
         siteCtx'    = siteCtx siteConfig' tags
         postCtx'    = postCtx siteConfig' tags
         postList'   = postList postsPattern' siteConfig' tags
