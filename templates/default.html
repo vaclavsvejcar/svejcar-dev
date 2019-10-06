@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
+  $if(gaId)$
   <script async src="https://www.googletagmanager.com/gtag/js?id=$gaId$"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -14,6 +14,7 @@
 
     gtag('config', '$gaId$');
   </script>
+  $endif$
 
 
 
@@ -37,7 +38,8 @@
     </section>
     <ul class="social-links">
       <li><a href="https://github.com/vaclavsvejcar" target="_blank"><i class="fa fa-github-square"></i></a></li>
-      <li><a href="https://www.linkedin.com/in/václav-švejcar-56665777/" target="_blank"><i class="fa fa-linkedin-square"></i></a></li>
+      <li><a href="https://www.linkedin.com/in/václav-švejcar-56665777/" target="_blank"><i
+            class="fa fa-linkedin-square"></i></a></li>
     </ul>
     <nav>
       <ul>

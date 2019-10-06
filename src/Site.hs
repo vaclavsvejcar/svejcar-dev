@@ -9,12 +9,17 @@ import           Hakyll                  hiding ( tagCloudField )
 import           Site.Compilers
 import           Site.Config                    ( SiteConfig(..) )
 import           Site.Core
+import           Site.Types                     ( RenderMode(..) )
 
-siteConfig :: UTCTime -> SiteConfig
-siteConfig builtAt' = SiteConfig { builtAt  = builtAt'
-                                 , gaId     = "UA-148507120-1"
-                                 , siteRoot = "https://svejcar.dev"
-                                 }
+siteConfig :: RenderMode -> UTCTime -> SiteConfig
+siteConfig mode builtAt' = SiteConfig { builtAt  = builtAt'
+                                      , gaId     = gaId'
+                                      , siteRoot = "https://svejcar.dev"
+                                      }
+ where
+  gaId' = case mode of
+    Draft -> Nothing
+    Prod  -> Just "UA-148507120-1"
 
 main :: IO ()
 main = do
@@ -24,7 +29,7 @@ main = do
 
     tags <- buildTags postsPattern' (fromCapture "tags/*/index.html")
 
-    let siteConfig' = siteConfig builtAt'
+    let siteConfig' = siteConfig siteMode builtAt'
         siteCtx'    = siteCtx siteConfig' tags
         postCtx'    = postCtx siteConfig' tags
         postList'   = postList postsPattern' siteConfig' tags

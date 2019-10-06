@@ -84,9 +84,11 @@ siteCtx config tags =
   tagCloudField "cloud" 60 150 tags
     <> constField "buildTime"    formattedTime
     <> constField "buildVersion" buildVersion
-    <> constField "gaId"         (gaId config)
+    <> maybeField "gaId" (gaId config)
+    <> missingField
     <> defaultContext
-  where formattedTime = formatTime defaultTimeLocale "%F %T UTC" (builtAt config)
+ where
+  formattedTime = formatTime defaultTimeLocale "%F %T UTC" (builtAt config)
 
 postCtx :: SiteConfig -> Tags -> Context String
 postCtx config tags =
@@ -94,6 +96,10 @@ postCtx config tags =
     <> dateField "datetime" "%Y-%m-%d"
     <> tagLinks getTags "tags" tags
     <> siteCtx config tags
+
+-- | Creates a 'field' for given key from optional value.
+maybeField :: String -> Maybe String -> Context a
+maybeField key = maybe missingField (constField key)
 
 (+||+) :: Routes -> Routes -> Routes
 (+||+) = composeRoutes
