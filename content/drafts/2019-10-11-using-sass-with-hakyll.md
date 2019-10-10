@@ -3,7 +3,7 @@ title: Using Sass with Hakyll
 tags: hakyll, haskell, meta, sass
 ---
 
-In last few years, _CSS_ changed a lot. Many new features were added, such as [Flexbox][css-flexbox], [Media Queries][css-media] and [animations][css-animations], but other things, such as using some kind of _variables_ or _modules_ for better organizing of source code are still not so great. This is where _CSS preprocessors_ come into play. And since I always had great experience with [Sass][sass] preprocessor, I decided to use if for this blog, written using [Hakyll][hakyll] static sites generator.
+In last few years, _CSS_ changed a lot. Many new features were added, such as [Flexbox][css-flexbox], [Media Queries][css-media] and [animations][css-animations], but other things, such as using some kind of _variables_ or _modules_ that would allow better organizing of source code are still not so great. This is where _CSS preprocessors_ come into play. And since I always had great experience with [Sass][sass] preprocessor, I decided to use if for this blog, written using [Hakyll][hakyll] static site generator.
 
 Unfortunately there's no built-in support for _Sass_ or any other _CSS preprocessor_ in _Hakyll_, but adding it is pretty straightforward and doesn't require much coding. In this blog post, I decided to sum up this process, both for future myself and for anyone else who'd try to solve the same problem.
 
@@ -18,12 +18,12 @@ match "assets/css/main.scss" $ do
 ```
 
 ## Problems with hot reloading
-Now try the above with _hot reloading_ using `stack exec site watch` command. When you change the `main.scss` file, changes are detected and recompiled and new `.css` file is generated, so you see the changes in web browser after refreshing. However, when you edit one of the smaller files you `@include` into the main one, no changes are detected, until you restart the _hot reloading_, which is pretty annoying.
+Now try the above with _hot reloading_ using `stack exec site watch` command. When you change the `main.scss` file, changes are detected, recompiled and new `.css` file is generated, so you see the changes in web browser after refreshing. However, when you edit one of the secondary files you `@include` into the main one, no changes are detected, until you restart the _hot reloading_, which is pretty annoying.
 
 So what's wrong? Using the `match "assets/css/main.scss"` rule, we tell _Hakyll_ to watch changes on file `main.scss`. But when you edit any of the included file, _Hakyll_ has no clue that it also needs to recompile the main one, to refresh the resulting `.css`. You might try to change the above rule to `match "assets/css/**.scss"`, but this won't help too, because when now you edit the included file, _Hakyll_ still has no clue that it also needs to recompile the `main.scss` and it results to the same problem.
 
 ## The solution
-Basically what we need to do is to tell _Hakyll_ to also recompile the `main.scss` each time any other `.scss` file is changed. It took me some time to discover how to do this, but then I found [comment from Hakyll author][solution], which describes exactly what we need:
+What we need to do is to tell _Hakyll_ to also recompile the `main.scss` each time any other `.scss` file is changed. It took me some time to discover how to do this, but then I found [this post from Hakyll author][solution], where he shows exactly what we need:
 
 ```haskell
 scssDependency <- makePatternDependency "assets/css/**.scss"
