@@ -8,6 +8,9 @@ import           Data.Time                      ( UTCTime(..)
 import           Hakyll                  hiding ( tagCloudField )
 import           Site.Compilers
 import           Site.Config                    ( SiteConfig(..) )
+import           Site.Contexts                  ( postCtx
+                                                , siteCtx
+                                                )
 import           Site.Core
 import           Site.Types                     ( RenderMode(..) )
 
@@ -49,7 +52,7 @@ main = do
           >>= loadAndApplyTemplate "templates/posts-list.html" ctx
           >>= loadAndApplyTemplate "templates/default.html"    ctx
           >>= relativizeUrls
-          >>= deIndexUrls
+          >>= deIndexURLs
 
     match "content/index.html" $ do
       let ctx = constField "page-blog" "" <> siteCtx'
@@ -62,7 +65,7 @@ main = do
           >>= makeItem
           >>= loadAndApplyTemplate "templates/default.html" ctx
           >>= relativizeUrls
-          >>= deIndexUrls
+          >>= deIndexURLs
 
     match postsPattern' $ do
       let ctx = constField "page-blog" "" <> siteCtx'
@@ -76,7 +79,7 @@ main = do
         _ <- saveSnapshot "teaser" teaser
         loadAndApplyTemplate "templates/default.html" ctx full
           >>= relativizeUrls
-          >>= deIndexUrls
+          >>= deIndexURLs
 
     match "content/about/index.md" $ do
       let ctx = constField "page-about" "" <> siteCtx'
@@ -86,7 +89,7 @@ main = do
         >>= loadAndApplyTemplate "templates/static.html"  ctx
         >>= loadAndApplyTemplate "templates/default.html" ctx
         >>= relativizeUrls
-        >>= deIndexUrls
+        >>= deIndexURLs
 
     create ["archive/index.html"] $ do
       let ctx = constField "page-archive" "" <> siteCtx'
@@ -100,7 +103,7 @@ main = do
           >>= loadAndApplyTemplate "templates/posts-list.html" archiveCtx
           >>= loadAndApplyTemplate "templates/default.html"    archiveCtx
           >>= relativizeUrls
-          >>= deIndexUrls
+          >>= deIndexURLs
 
     scssDependency <- makePatternDependency "assets/css/**.scss"
     rulesExtraDependencies [scssDependency]
