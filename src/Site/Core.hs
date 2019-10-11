@@ -22,6 +22,7 @@ module Site.Core
   )
 where
 
+import           Control.Lens
 import           Control.Monad                  ( when )
 import           Data.List                      ( intersperse
                                                 , isSuffixOf
@@ -38,6 +39,16 @@ import           System.FilePath                ( splitExtension )
 import           System.Console.Pretty          ( Color(..)
                                                 , color
                                                 )
+
+-- | Cleans up generated files used for Draft mode.
+cleanDrafts :: IO ()
+cleanDrafts = do
+  remove "_draft"
+  remove "_draft_cache"
+ where
+  remove dir = do
+    putStrLn $ "Removing " ++ dir ++ "..."
+    removeDirectory dir
 
 deIndexURLs :: Item String -> Compiler (Item String)
 deIndexURLs item = return $ fmap (withUrls stripIndex) item
@@ -77,6 +88,7 @@ runSite :: (RenderMode -> Rules ()) -> IO ()
 runSite rules = do
   args <- getArgs
   let draftMode  = length args == 2 && args !! 1 == "draft"
+      action     = args ^? element 0
       hakyllConf = if draftMode
         then defaultConfiguration { destinationDirectory = "_draft"
                                   , storeDirectory       = "_draft_cache"
@@ -86,6 +98,10 @@ runSite rules = do
       mode  = if draftMode then Draft else Prod
       args' = take 1 args
 
+  case action of
+    Just "clean" -> cleanDrafts
+    _            -> return ()
+
   when draftMode
     $ putStrLn (color Yellow "!!!!!!!!! RUNNING IN DRAFT MODE !!!!!!!!!")
   withArgs args' $ hakyllWith hakyllConf (rules mode)
@@ -93,11 +109,13 @@ runSite rules = do
 stripContent :: Routes
 stripContent = gsubRoute "content/" $ const ""
 
+-- | Strips "index.html" from given URL string.
 stripIndex :: String -> String
 stripIndex url =
   if "index.html" `isSuffixOf` url && elem (head url) ("/." :: String)
     then take (length url - 10) url
     else url
 
+-- | Infix version of 'composeRoutes'.
 (+||+) :: Routes -> Routes -> Routes
 (+||+) = composeRoutes
