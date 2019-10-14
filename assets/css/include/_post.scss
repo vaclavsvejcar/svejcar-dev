@@ -63,10 +63,45 @@
   }
 }
 
+.blog-post.full .toc {
+  float: right;
+  margin: 0 0 25px 25px;
+
+  > .header {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  > ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li > ul {
+    padding-left: 25px;
+  }
+}
+
+.blog-post.teaser .toc {
+  display: none;
+}
+
 .blog-post.full {
   margin-bottom: 50px;
 }
 
 #commento-footer {
   display: none;
+}
+
+@media screen and (max-width: 800px) {
+  .blog-post.full .toc {
+    display: block;
+    float: none;
+    margin: 25px 0 25px 0;
+  }
 }

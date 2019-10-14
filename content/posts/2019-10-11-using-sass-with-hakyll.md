@@ -1,6 +1,7 @@
 ---
 title: Using Sass with Hakyll
 tags: hakyll, haskell, meta, sass
+withTOC: true
 ---
 
 In last few years, _CSS_ changed a lot. Many new features were added, such as [Flexbox][css-flexbox], [Media Queries][css-media] and [animations][css-animations], but other things, such as using some kind of _variables_ or _modules_ that would allow better organizing of source code are still not so great. This is where _CSS preprocessors_ come into play. And since I always had great experience with [Sass][sass] preprocessor, I decided to use if for this blog, written using [Hakyll][hakyll] static site generator.

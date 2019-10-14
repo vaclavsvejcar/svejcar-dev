@@ -17,9 +17,11 @@ where
 import           Data.Time                      ( defaultTimeLocale
                                                 , formatTime
                                                 )
-import           Hakyll
+import           Hakyll                  hiding ( tagCloudField )
 import           Site.Config
-import           Site.Tags                      ( tagLinks )
+import           Site.Tags                      ( tagCloudField
+                                                , tagLinks
+                                                )
 
 -- | Creates a 'Context' for blog posts.
 postCtx :: SiteConfig -> Tags -> Context String

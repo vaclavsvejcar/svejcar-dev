@@ -1,6 +1,7 @@
 ---
 title: Haskell on Raspberry PI 4
 tags: haskell, stack, raspberry pi, ghc, arm
+withTOC: true
 ---
 
 Last year, I purchased the [Raspberry Pi 3B+] for some hobby projects. Shortly after I started to learn [Haskell], I was wondering if I could build and run _Haskell_ software on the [ARMv7] platform. So I made some attempts with my _Raspberry_ but quickly realized that despite being able to run compiled binaries, the 1GB or RAM is just not enough to build them using the [GHC]. So I gave it up for a while.

@@ -11,7 +11,7 @@
     };
 
     const linksInNewTab = function () {
-        const linkList = document.querySelectorAll('div.post-content a');
+        const linkList = document.querySelectorAll('div.post-content p a');
         for (let i in linkList) {
             linkList[i].setAttribute('target', '_blank');
         }

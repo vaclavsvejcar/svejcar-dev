@@ -1,6 +1,7 @@
 ---
 title: Better 'toString' alternative for case classes
 tags: scala, cats, shapeless
+withTOC: true
 ---
 
 One of the great advantages of [Scala]'s [case classes][case class] is that compared to regular classes, bunch of useful methods, such as `equals`, `hashCode` and `toString`, are automatically generated. The generated `toString` method is nice, because it includes actual field values of the displayed case class.
@@ -25,7 +26,7 @@ Wouldn't it help if we could also see field names for these values? In this arti
 
 <!-- MORE -->
 
-## Before we begin
+# Before we begin
 All code examples below assume that you have [Cats] and [Kittens] libraries imported into your project. You can do that by adding following lines to `build.sbt`:
 
 ```scala

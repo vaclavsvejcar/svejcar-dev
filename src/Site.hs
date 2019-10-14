@@ -12,6 +12,7 @@ import           Site.Contexts                  ( postCtx
                                                 , siteCtx
                                                 )
 import           Site.Core
+import           Site.Pandoc                    ( writerOptionsTOC )
 import           Site.Types                     ( RenderMode(..) )
 
 siteConfig :: RenderMode -> UTCTime -> SiteConfig
@@ -71,7 +72,11 @@ main = do
       let ctx = constField "page-blog" "" <> siteCtx'
       route $ directorizeDate +||+ stripContent +||+ setExtension "html"
       compile $ do
-        compiled <- pandocCompiler
+        ident <- getUnderlying
+        toc   <- getMetadataField ident "withTOC"
+        let writerOptions =
+              maybe defaultHakyllWriterOptions (const writerOptionsTOC) toc
+        compiled <- pandocCompilerWith defaultHakyllReaderOptions writerOptions
         full     <- loadAndApplyTemplate "templates/post.html" postCtx' compiled
         teaser   <- loadAndApplyTemplate "templates/post-teaser.html" postCtx'
           $ dropMore compiled
