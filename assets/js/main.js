@@ -1,23 +1,20 @@
-/*jslint browser */
-/*jslint es6:true*/
 
-(function () {
-    'use strict';
+$(function () {
 
-    const toggleNav = function () {
-        document.querySelector('#toggle-sidebar').onclick = function () {
-            document.querySelector('aside').classList.toggle('visible');
-        };
-    };
+    $('#toggle-sidebar').on('click', function (ev) {
+        $('aside').toggleClass('visible');
+    });
 
-    const linksInNewTab = function () {
-        const linkList = document.querySelectorAll('div.post-content p a');
-        for (let i in linkList) {
-            linkList[i].setAttribute('target', '_blank');
-        }
-    };
+    $('div.post-content p a').each(function (i) {
+        $(this).attr('target', '_blank');
+    });
 
-    toggleNav();
-    linksInNewTab();
+    $('.post-content').children('h1, h2, h3, h4, h5').each(function () {
+        var id = $(this).attr('id');
+        var text = $(this).html();
 
-}());
+        $(this)
+            .html('')
+            .append('<a href="#' + id + '" class="header-link">' + text + '</a>');
+    });
+});

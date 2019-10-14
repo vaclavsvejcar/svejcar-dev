@@ -44,45 +44,95 @@
   h2,
   h3,
   h4 {
+    position: relative;
     margin-top: 30px;
   }
 
   h1 {
     font-size: 1.7em;
-    color: #212121;
+    a {
+      color: #212121;
+    }
   }
 
   h2 {
     font-size: 1.4em;
-    color: #424242;
+    a {
+      color: #424242;
+    }
   }
 
   h3 {
     font-size: 1.1em;
-    color: #616161;
+    a {
+      color: #616161;
+    }
   }
 }
 
-.blog-post.full .toc {
-  float: right;
-  margin: 0 0 25px 25px;
-
-  > .header {
-    font-weight: bold;
-    font-size: 1.2em;
+.blog-post.full {
+  .header-section-number {
+    color: $color-light-2;
+    font-family: "Merriweather", serif;
   }
 
-  ul {
-    list-style: none;
+  .toc {
+    float: right;
+    margin: 0 0 25px 25px;
+
+    .toc-section-number {
+      width: 20px;
+      display: inline-block;
+      margin-right: 5px;
+      text-align: right;
+      font-family: "Merriweather", serif;
+
+      color: $color-light-2;
+    }
+
+    > .header {
+      margin-bottom: 10px;
+      padding-left: 10px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    > ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li > ul {
+      padding-left: 25px;
+    }
   }
 
-  > ul {
-    margin: 0;
-    padding: 0;
-  }
+  .post-content {
+    h1,
+    h2,
+    h3,
+    h4 {
+      a:before {
+        display: inline-block;
+        position: absolute;
+        left: -30px;
 
-  li > ul {
-    padding-left: 25px;
+        color: $color-link-internal;
+        opacity: 0;
+
+        transition: opacity 100ms ease;
+
+        content: "#";
+      }
+
+      a:hover:before {
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -103,5 +153,19 @@
     display: block;
     float: none;
     margin: 25px 0 25px 0;
+  }
+
+  .blog-post .post-content {
+    font-size: 0.9em;
+    line-height: 150%;
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      a:before {
+        display: none;
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@
 @import "include/post";
 @import "include/syntax";
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Merriweather&display=swap");
 
 html,
 body {
@@ -227,7 +228,7 @@ footer {
   display: block;
   margin-top: 50px;
   margin-bottom: 10px;
-  font-size: .7em;
+  font-size: 0.7em;
   color: $color-light-3;
 
   &:after {
