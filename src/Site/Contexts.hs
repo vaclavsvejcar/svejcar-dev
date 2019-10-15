@@ -37,11 +37,10 @@ siteCtx config tags =
   tagCloudField "cloud" 60 150 tags
     <> constField "buildTime" formattedTime
     <> maybeField "gaId" (gaId config)
-    <> missingField
     <> defaultContext
  where
   formattedTime = formatTime defaultTimeLocale "%F %T UTC" (builtAt config)
 
 -- | Creates a 'field' for given key from optional value.
 maybeField :: String -> Maybe String -> Context a
-maybeField key = maybe missingField (constField key)
+maybeField key = maybe mempty (constField key)
