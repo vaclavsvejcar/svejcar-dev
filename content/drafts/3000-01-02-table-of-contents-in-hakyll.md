@@ -10,6 +10,8 @@ After some time spent by searching optimal solution, I figured out that [Pandoc]
 
 <!-- MORE -->
 
+# TOC support in Pandoc
+# Implementation in Hakyll
 todo
 
 [hakyll]: https://jaspervdj.be/hakyll/

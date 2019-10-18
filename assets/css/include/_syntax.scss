@@ -1,7 +1,8 @@
 @import "env";
 @import url("https://fonts.googleapis.com/css?family=Fira+Code&display=swap");
 
-p > code {
+p > code,
+li > code {
   font-family: "Fira Code", monospace;
   background: #ffffff;
   color: $color-link-internal;
