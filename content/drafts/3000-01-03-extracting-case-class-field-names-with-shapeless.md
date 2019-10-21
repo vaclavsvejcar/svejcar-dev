@@ -4,13 +4,13 @@ tags: scala, shapeless
 withTOC: true
 ---
 
-In my previous job, we were working on backend system that regularly fetched data from other services, both 3rd party and inhouse. These data were parsed and mapped into our internal structure, modelled with _case classes_. The fetching itself was usually done using some _REST API_ and was mostly straightforward, except one service, where you had to explicitly list all fields of given entity for which you wanted to fetch new data in a _REST_ call similar to this:
+In my previous job, we were working on backend system that regularly fetched data from other services, both 3rd party and inhouse. These data were parsed and mapped into our internal data structure modelled with _case classes_. The fetching itself was usually done using some _REST API_ and was mostly straightforward, except for one service, where we had to explicitly list all fields of given entity for which we wanted to fetch new data. This was done using _REST_ call similar to this:
 
 ```txt
 GET /entities/User?fields=id,name,surname
 ```
 
-So based on fact that this entity is mapped in our backend as _case class_ `User`, how can we get all its field names to build the above query? In this blog post, I'd like to share the simple solution, based on some _generic derivation_ using [Shapeless][shapeless].
+So based on the fact that this entity would be mapped in our backend as _case class_ `User`, how can we get all its field names to build the above query? In this blog post, I'd like to share the simple solution, based on some _generic derivation_ using [Shapeless][shapeless].
 
 <!-- MORE -->
 
@@ -66,7 +66,7 @@ val keyList = keys.toList.map(_.name)
 // keyList: List[String] = List("id", "name", "surname")
 ```
 
-_Et voilà_. We got the list of fields names, exactly as needed. But problem is that this code is bound to the `User` _case class_. Let's do the last thing and make the code more _generic_.
+_Et voilà_. We got the list of field names, exactly as needed. But problem is that this code is bound to the `User` _case class_. Let's do the last thing and make the code more _generic_.
 
 # Making things more generic
 Here is the code for final, generic solution:
