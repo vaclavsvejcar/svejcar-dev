@@ -15,20 +15,20 @@ So based on the fact that this entity would be mapped in our backend as _case cl
 <!-- MORE -->
 
 # Before we start
-This blog post assumes at least basic knowledge of what [Shapeless][shapeless] is and what is the [HList][shapeless_HList] and the [Aux pattern]. Here is the list of nice resources to start with:
+This blog post assumes at least basic knowledge of what _Shapeless_ is and what is the _HList_ and the _Aux pattern_. Here is the list of some resources to start with:
 
 - [The Type Astronaut's Guide to Shapeless] - amazing free book that serves as intro into _Shapeless_, can't recommend it more
 - [Bits of Shapeless part 1: HLists] - nice intro into _HLists_
 - [Aux pattern] - introduction into _Aux pattern_, vastly used by _Shapeless_ to overcome some limitations of _Scala's_ type system
 
 # Naive implementation
-Let's start with the definition of our example case class:
+Let's start with the definition of the example case class:
 
 ```scala
 case class User(id: Long, name: String, surname: String)
 ```
 
-So the goal is clear, we need to write piece of code that extracts field names from any given _case class_, without the need to reimplement it again and again for every _case class_ in our domain. So instead of working with concrete _types_ (let's say the `User` _case class_), we want to work with the _shape_, more _generic_ representation, something like _list of fields_.
+So the goal is clear, we need to write piece of code that extracts field names from any given _case class_, without the need to reimplement it again and again for every _case class_ in our domain. So instead of working with concrete _types_ (let's say the `User` _case class_), we want to work with more _generic_ representation, something like _list of fields_.
 
 ## Attempt with Generic
 Let's try to find way how to convert any _case class_ into its _generic_ representation. _Shapeless_ offers [Generic][shapeless_Generic] class, that does this for us:
@@ -66,7 +66,7 @@ val keyList = keys.toList.map(_.name)
 // keyList: List[String] = List("id", "name", "surname")
 ```
 
-_Et voilà_. We got the list of field names, exactly as needed. But problem is that this code is bound to the `User` _case class_. Let's do the last thing and make the code more _generic_.
+_Et voilà_. We got the list of field names, exactly as needed. But problem is that this code is specific to the `User` _case class_. So let's do the final step and make the code more _generic_.
 
 # Making things more generic
 Here is the code for final, generic solution:
@@ -88,7 +88,12 @@ object Attributes {
 }
 ```
 
-As you can see, it's pretty similar to previous code, with the difference that instances of `Keys`, `LabelledGeneric` etc are now resolved from _implicit values_. These are basically provided by shapeless, backed up by some heavy _macro_ machinery, but we really don't need to care about this detail. Rest of the code is pretty much same, just wrapped up into the `Attributes` trait, so we can use it like this:
+As you can see, it's pretty similar to previous code, but with few differences:
+
+- we need to use the _Aux pattern_ now to overcome some limitations of _Scala's_ type system
+- we need to obtain _implicit value_ for [ToTraversable][shapeless_ToTraversable], because it's required by the following call `keys().toList.map(_.name)`
+
+Also instances of `Keys`, `LabelledGeneric`, etc. are now resolved from _implicit values_. These are basically provided by shapeless, backed up by some heavy _macro_ machinery, but we really don't need to care about this detail. Rest of the code is pretty much same, just wrapped up into the `Attributes` trait, so we can use it like this:
 
 ```scala
 val keys = Attributes[User].fieldNames
@@ -96,7 +101,7 @@ val keys = Attributes[User].fieldNames
 ```
 
 # Scala 2.13 and productElementNames
-[Scala 2.13] added new method, [productElementNames], into the [Product] trait, from which all _case classes_ inherits. This method returns list of all field names, so it can be used as alternative to the above code, unfortunately with one huge drawback. Because this is a method implemented in _trait_, you actually need instance of your _case class_ to call this method:
+[Scala 2.13] added new method, [productElementNames], into the [Product] trait, from which all _case classes_ inherits. This method returns list of all field names, but since it's method, it needs existing instance, which is actually the major drawback, compared to the above solution:
 
 ```scala
 val user = User(123L, "John", "Smith")
@@ -116,4 +121,5 @@ Because of this fact, it really cannot be used as replacement of the _Shapeless_
 [shapeless_HList]: https://static.javadoc.io/com.chuusai/shapeless_2.13/2.3.3/shapeless/HList.html
 [shapeless_Keys]: https://static.javadoc.io/com.chuusai/shapeless_2.13/2.3.3/shapeless/ops/record/Keys.html
 [shapeless_LabelledGeneric]: https://static.javadoc.io/com.chuusai/shapeless_2.13/2.3.3/shapeless/LabelledGeneric.html
+[shapeless_ToTraversable]: https://static.javadoc.io/com.chuusai/shapeless_2.13/2.3.3/shapeless/ops/hlist$$ToTraversable.html
 [The Type Astronaut's Guide to Shapeless]: https://underscore.io/books/shapeless-guide/
