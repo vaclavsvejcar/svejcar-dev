@@ -76,7 +76,7 @@ trait Attributes[T] {
 }
 
 object Attributes {
-  implicit def toNames[T, Repr <: HList, KeysRepr <: HList](
+  implicit def toAttributes[T, Repr <: HList, KeysRepr <: HList](
     implicit gen: LabelledGeneric.Aux[T, Repr],
     keys: Keys.Aux[Repr, KeysRepr],
     traversable: ToTraversable.Aux[KeysRepr, List, Symbol]

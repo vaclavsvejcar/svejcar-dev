@@ -126,3 +126,7 @@ main = do
       compile compressJsCompiler
 
     match "templates/*" $ compile templateBodyCompiler
+
+    match "content/robots.txt" $ do
+      route stripContent
+      compile copyFileCompiler
