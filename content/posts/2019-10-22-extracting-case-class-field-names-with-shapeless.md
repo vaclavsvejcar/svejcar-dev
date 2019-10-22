@@ -1,5 +1,6 @@
 ---
 title: Extracting case class field names with Shapeless
+description: Shapeless library is often considered as some kind of sorcery, but it can be really usedful in day-to-day tasks.
 tags: scala, shapeless
 withTOC: true
 ---

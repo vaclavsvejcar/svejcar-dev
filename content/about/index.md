@@ -1,5 +1,6 @@
 ---
 title: About me
+description: Few words about this blog and about me.
 ---
 
 For more than 6 years, I'm working as freelance software developer and consultant. My specialization is development for [Java platform], including [Java] and [Scala] languages. I have experience with working for both small startup companies as well as large international corporations (banking, insurance, telco). In my free time, I'm discovering the possibilities of functional programming, mainly in Scala, but recently also in [Haskell]. Outside the IT world, I'm enthusiastic amateur film photographer.

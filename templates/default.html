@@ -3,7 +3,13 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description" content="$description$" />
+  
+  $if(tags)$
+  <meta name="keywords" content="$tags$" />
+  $endif$
 
   $if(gaId)$
   <script async src="https://www.googletagmanager.com/gtag/js?id=$gaId$"></script>
@@ -18,7 +24,7 @@
 
   <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
     integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <title>$title$ - Vaclav Svejcar</title>
+  <title>$title$ - Vaclav Svejcar personal blog</title>
 
   <link type="text/css" rel="stylesheet" href="/assets/css/screen.css" />
   <link type="text/css" rel="stylesheet" href="/assets/css/syntax.css" />

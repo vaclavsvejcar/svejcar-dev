@@ -1,5 +1,6 @@
 ---
 title: Better 'toString' alternative for case classes
+description: Default toString method of Scala case class doesn't show field names. But there's alternative how to implement such feature using the Cats and Kittens library.
 tags: scala, cats, shapeless
 withTOC: true
 ---

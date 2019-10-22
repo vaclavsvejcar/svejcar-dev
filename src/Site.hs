@@ -45,9 +45,10 @@ main = do
           (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
         let ctx =
               constField "tag" tag
-                <> constField "title"     ("Posts for tag: " ++ tag)
-                <> constField "posts"     list
-                <> constField "page-blog" ""
+                <> constField "title"       ("Posts for tag: " ++ tag)
+                <> constField "posts"       list
+                <> constField "page-blog"   ""
+                <> constField "description" ("Posts for tag: " ++ tag)
                 <> siteCtx'
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" ctx
@@ -102,7 +103,8 @@ main = do
       compile $ do
         let archiveCtx =
               field "posts" (\_ -> postList' recentFirst)
-                <> constField "title" "Blog Archive"
+                <> constField "description" "Blog Archive"
+                <> constField "title"       "Blog Archive"
                 <> ctx
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" archiveCtx

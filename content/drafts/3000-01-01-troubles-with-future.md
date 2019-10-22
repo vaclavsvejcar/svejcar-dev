@@ -1,5 +1,6 @@
 ---
 title: Troubles with Future
+description: todo
 tags: scala, monix, future
 ---
 

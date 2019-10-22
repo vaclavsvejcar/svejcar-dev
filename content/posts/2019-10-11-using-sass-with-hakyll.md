@@ -1,5 +1,6 @@
 ---
 title: Using Sass with Hakyll
+description: Unfortunately, there's no direct support for Sass in Hakyll, but it's really easy to implement it using the hakyll-sass library.
 tags: hakyll, haskell, meta, sass
 withTOC: true
 ---

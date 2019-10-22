@@ -18,8 +18,8 @@ import           Data.Time                      ( UTCTime(..) )
 -- | Site configuration.
 data SiteConfig =
   SiteConfig
-    { builtAt :: UTCTime
-    , gaId :: Maybe String     -- ^ /Google Analytics/ unique ID
+    { builtAt  :: UTCTime
+    , gaId     :: Maybe String -- ^ /Google Analytics/ unique ID
     , siteRoot :: String -- ^ Root URL of the site
     }
 
