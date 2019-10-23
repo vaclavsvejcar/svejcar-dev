@@ -1,2 +1,3 @@
+Sitemap: https://svejcar.dev/sitemap.xml
 User-agent: *
 Disallow: /assets
