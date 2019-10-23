@@ -112,7 +112,7 @@ stripContent = gsubRoute "content/" $ const ""
 -- | Strips "index.html" from given URL string.
 stripIndex :: String -> String
 stripIndex url =
-  if "index.html" `isSuffixOf` url && elem (head url) ("/." :: String)
+  if "index.html" `isSuffixOf` url -- && elem (head url) ("/." :: String)
     then take (length url - 10) url
     else url
 

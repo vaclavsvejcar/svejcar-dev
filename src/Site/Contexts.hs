@@ -14,9 +14,6 @@ module Site.Contexts
   )
 where
 
-import           Data.Time                      ( defaultTimeLocale
-                                                , formatTime
-                                                )
 import           Hakyll                  hiding ( tagCloudField )
 import           Site.Config
 import           Site.Tags                      ( tagCloudField
@@ -35,11 +32,8 @@ postCtx config tags =
 siteCtx :: SiteConfig -> Tags -> Context String
 siteCtx config tags =
   tagCloudField "cloud" 60 150 tags
-    <> constField "buildTime" formattedTime
-    <> maybeField "gaId" (gaId config)
+    <> maybeField "gaId" (scGaId config)
     <> defaultContext
- where
-  formattedTime = formatTime defaultTimeLocale "%F %T UTC" (builtAt config)
 
 -- | Creates a 'field' for given key from optional value.
 maybeField :: String -> Maybe String -> Context a

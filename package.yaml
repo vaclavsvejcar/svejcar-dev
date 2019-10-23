@@ -1,5 +1,5 @@
 name: svejcar-dev
-version: 1.4.0.1
+version: 1.4.1.0
 github: "vaclavsvejcar/svejcar-dev"
 license: Apache-2.0
 author: "Vaclav Svejcar"
@@ -9,7 +9,6 @@ copyright: "2019 Vaclav Svejcar"
 dependencies:
   - base >= 4.7 && < 5
 ghc-options:
-  - -O2
   - -Wall
   - -Wcompat
   - -Wincomplete-record-updates
@@ -28,6 +27,8 @@ executables:
       - blaze-html
       - bytestring
       - containers
+      - data-default-class
+      - directory
       - filepath
       - hakyll
       - hakyll-sass
@@ -39,3 +40,4 @@ executables:
       - split
       - text
       - time
+      - xml
