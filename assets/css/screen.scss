@@ -74,6 +74,7 @@ aside {
   position: fixed;
   width: $size-aside-width;
   top: 0;
+  right: 0;
   bottom: 0;
   overflow-y: auto;
   padding: 50px 0;
@@ -219,7 +220,7 @@ main {
 
 main,
 footer {
-  margin-left: $size-aside-width;
+  margin-right: $size-aside-width;
   padding: 0 $padding-big;
   color: $color-text;
 }
@@ -255,11 +256,11 @@ footer {
   aside {
     width: 100%;
     margin-top: $size-header-height;
-    margin-left: -100%;
-    transition: margin-left ease 0.2s;
+    margin-right: -100%;
+    transition: margin-right ease 0.2s;
 
     &.visible {
-      margin-left: 0;
+      margin-right: 0;
     }
   }
 
@@ -285,7 +286,7 @@ footer {
   main,
   footer {
     margin-top: $size-header-height;
-    margin-left: 0px;
+    margin-right: 0px;
     padding: 0 $padding-small;
   }
 
