@@ -4,6 +4,10 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Merriweather&display=swap");
 
+html {
+  scroll-padding-top: 25px;
+}
+
 html,
 body {
   margin: 0;
@@ -260,6 +264,10 @@ footer {
 }
 
 @media screen and (max-width: 800px) {
+  html {
+    scroll-padding-top: calc(#{$size-header-height} + 20px);
+  }
+
   body > header {
     display: initial;
     position: fixed;
