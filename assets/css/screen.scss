@@ -38,35 +38,36 @@ a:hover {
   color: $color-link-internal;
 }
 
-aside,
 body > header {
+  height: $size-header-height;
+  line-height: $size-header-height;
+  margin-right: $size-aside-width;
+  z-index: 100;
+
+  background: $color-light-1;
+  font-size: 30px;
+
+  > .left {
+    float: left;
+    margin-left: 50px;
+    font-size: 0.5em;
+
+    text-transform: uppercase;
+  }
+
+  > .right {
+    display: none;
+    float: right;
+  }
+
   a,
   a:visited {
-    color: $color-light-1;
+    color: $color-dark-primary;
     text-decoration: none;
   }
 
   a:hover {
-    color: $color-light-1;
-  }
-}
-
-body > header {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: $size-header-height;
-  line-height: $size-header-height;
-  padding: 0 $padding-small;
-  z-index: 100;
-
-  background: $color-dark-primary;
-  font-size: 30px;
-
-  > a {
-    display: block;
+    color: $color-link-internal;
   }
 }
 
@@ -82,6 +83,16 @@ aside {
 
   background: $color-dark-primary;
   color: $color-light-1;
+
+  a,
+  a:visited {
+    color: $color-light-1;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: $color-light-1;
+  }
 }
 
 aside > section.about {
@@ -251,6 +262,32 @@ footer {
 @media screen and (max-width: 800px) {
   body > header {
     display: initial;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-right: 0;
+    padding: 0 $padding-small;
+
+    background: $color-dark-primary;
+
+    a,
+    a:visited {
+      color: $color-light-1;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: $color-light-1;
+    }
+
+    > .left {
+      margin-left: 0;
+    }
+
+    > .right {
+      display: initial;
+    }
   }
 
   aside {

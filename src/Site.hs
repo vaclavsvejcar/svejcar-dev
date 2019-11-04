@@ -37,10 +37,11 @@ main = runSite $ \mode -> do
       list <- postList'
         (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
       let ctx =
-            constField "tag" tag
+            boolField "page-blog" (const True)
+              <> boolField "back-button" (const True)
+              <> constField "tag"         tag
               <> constField "title"       ("Posts for tag: " ++ tag)
               <> constField "posts"       list
-              <> constField "page-blog"   ""
               <> constField "description" ("Posts for tag: " ++ tag)
               <> siteCtx'
       makeItem ""
@@ -50,7 +51,7 @@ main = runSite $ \mode -> do
         >>= deIndexURLs
 
   match "content/index.html" $ do
-    let ctx = constField "page-blog" "" <> siteCtx'
+    let ctx = boolField "page-blog" (const True) <> siteCtx'
     route stripContent
     compile $ do
       body <- fmap itemBody templateBodyCompiler
@@ -63,7 +64,10 @@ main = runSite $ \mode -> do
         >>= deIndexURLs
 
   match postsPattern' $ do
-    let ctx = constField "page-blog" "" <> siteCtx'
+    let ctx =
+          boolField "back-button" (const True)
+            <> boolField "page-blog" (const True)
+            <> siteCtx'
     route $ directorizeDate +||+ stripContent +||+ setExtension "html"
     compile $ do
       ident <- getUnderlying
@@ -81,7 +85,10 @@ main = runSite $ \mode -> do
         >>= deIndexURLs
 
   match "content/about/index.md" $ do
-    let ctx = constField "page-about" "" <> siteCtx'
+    let ctx =
+          boolField "back-button" (const True)
+            <> boolField "page-about" (const True)
+            <> siteCtx'
     route $ stripContent +||+ setExtension "html"
     compile
       $   pandocCompiler
@@ -91,7 +98,10 @@ main = runSite $ \mode -> do
       >>= deIndexURLs
 
   create ["archive/index.html"] $ do
-    let ctx = constField "page-archive" "" <> siteCtx'
+    let ctx =
+          boolField "back-button" (const True)
+            <> boolField "page-archive" (const True)
+            <> siteCtx'
     route idRoute
     compile $ do
       let archiveCtx =
