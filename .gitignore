@@ -28,3 +28,6 @@ _cache/
 _draft_cache/
 _draft/
 _site/
+
+## macOS specific
+.DS_Store

@@ -134,6 +134,10 @@ main = runSite $ \mode -> do
     route idRoute
     compile compressJsCompiler
 
+  match "static/*" $ do
+    route stripStatic
+    compile copyFileCompiler
+
   match "templates/*" $ compile templateBodyCompiler
 
   match "content/robots.txt" $ do

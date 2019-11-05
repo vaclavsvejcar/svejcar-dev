@@ -17,6 +17,7 @@ module Site.Core
   , postsPattern
   , runSite
   , stripContent
+  , stripStatic
   , stripIndex
   , (+||+)
   )
@@ -107,7 +108,13 @@ runSite rules = do
   withArgs args' $ hakyllWith hakyllConf (rules mode)
 
 stripContent :: Routes
-stripContent = gsubRoute "content/" $ const ""
+stripContent = stripRoute "content/"
+
+stripRoute :: String -> Routes
+stripRoute ptrn = gsubRoute ptrn $ const ""
+
+stripStatic :: Routes
+stripStatic = stripRoute "static/"
 
 -- | Strips "index.html" from given URL string.
 stripIndex :: String -> String
