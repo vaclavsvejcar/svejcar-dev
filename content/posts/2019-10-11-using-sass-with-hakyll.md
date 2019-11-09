@@ -2,7 +2,7 @@
 title: Using Sass with Hakyll
 description: Unfortunately, there's no direct support for Sass in Hakyll, but it's really easy to implement it using the hakyll-sass library.
 tags: hakyll, haskell, meta, sass
-withTOC: true
+tableOfContents: true
 ---
 
 In last few years, _CSS_ changed a lot. Many new features were added, such as [Flexbox][css-flexbox], [Media Queries][css-media] and [animations][css-animations], but other things, such as using some kind of _variables_ or _modules_ that would allow better organizing of source code are still not so great. This is where _CSS preprocessors_ come into play. And since I always had great experience with [Sass][sass] preprocessor, I decided to use if for this blog, written using [Hakyll][hakyll] static site generator.

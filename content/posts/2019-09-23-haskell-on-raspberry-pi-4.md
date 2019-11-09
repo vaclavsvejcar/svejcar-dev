@@ -2,7 +2,7 @@
 title: Haskell on Raspberry PI 4
 description: Raspberry Pi 4 now offers up to 4GB of RAM, finally enough to build & run Haskell programs with GHC and Stack on ARM platform.
 tags: haskell, stack, raspberry pi, ghc, arm
-withTOC: true
+tableOfContents: true
 ---
 
 Last year, I purchased the [Raspberry Pi 3B+] for some hobby projects. Shortly after I started to learn [Haskell], I was wondering if I could build and run _Haskell_ software on the [ARMv7] platform. So I made some attempts with my _Raspberry_ but quickly realized that despite being able to run compiled binaries, the 1GB or RAM is just not enough to build them using the [GHC]. So I gave it up for a while.

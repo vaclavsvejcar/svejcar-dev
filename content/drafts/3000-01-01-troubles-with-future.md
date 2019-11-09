@@ -2,7 +2,7 @@
 title: Troubles with Future
 description: todo
 tags: scala, monix, future
-withTOC: true
+tableOfContents: true
 ---
 
 todo

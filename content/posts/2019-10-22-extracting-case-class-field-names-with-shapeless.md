@@ -2,7 +2,7 @@
 title: Extracting case class field names with Shapeless
 description: Shapeless library is often considered as some kind of sorcery, but it can be really usedful in day-to-day tasks.
 tags: scala, shapeless
-withTOC: true
+tableOfContents: true
 ---
 
 In my previous job, we were working on backend system that regularly fetched data from other services, both 3rd party and inhouse. These data were parsed and mapped into our internal data structure modelled with _case classes_. The fetching itself was usually done using some _REST API_ and was mostly straightforward, except for one service, where we had to explicitly list all fields of given entity for which we wanted to fetch new data. This was done using _REST_ call similar to this:

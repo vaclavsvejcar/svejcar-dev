@@ -71,7 +71,7 @@ main = runSite $ \mode -> do
     route $ directorizeDate +||+ stripContent +||+ setExtension "html"
     compile $ do
       ident <- getUnderlying
-      toc   <- getMetadataField ident "withTOC"
+      toc   <- getMetadataField ident "tableOfContents"
       let writerOptions =
             maybe defaultHakyllWriterOptions (const writerOptionsTOC) toc
       compiled <- pandocCompilerWith defaultHakyllReaderOptions writerOptions
