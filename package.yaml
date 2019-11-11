@@ -1,5 +1,5 @@
 name: svejcar-dev
-version: 1.4.2.0
+version: 1.4.3.0
 github: "vaclavsvejcar/svejcar-dev"
 license: Apache-2.0
 author: "Vaclav Svejcar"
@@ -37,6 +37,8 @@ executables:
       - pandoc
       - pandoc-types
       - pretty-terminal
+      - skylighting
+      - skylighting-core
       - split
       - text
       - time

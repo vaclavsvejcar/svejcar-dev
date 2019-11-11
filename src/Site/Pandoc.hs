@@ -10,21 +10,31 @@ Module providing Pandoc related functions and data types for the site.
 -}
 {-# LANGUAGE OverloadedStrings #-}
 module Site.Pandoc
-  ( writerOptionsTOC
+  ( withSyntax
+  , withTableOfContents
   )
 where
 
-import           Hakyll                  hiding ( tagCloudField )
+import           Skylighting.Parser             ( addSyntaxDefinition )
+import           Skylighting.Syntax             ( defaultSyntaxMap )
+import           Skylighting.Types              ( Syntax )
 import           Text.Pandoc.Options            ( WriterOptions
                                                 , writerNumberSections
+                                                , writerSyntaxMap
                                                 , writerTableOfContents
                                                 , writerTemplate
                                                 , writerTOCDepth
                                                 )
 
--- | Pandoc writer options for Table of Content rendering
-writerOptionsTOC :: WriterOptions
-writerOptionsTOC = defaultHakyllWriterOptions
+
+-- | Adds writer options for custom syntax highlighting.
+withSyntax :: Syntax -> WriterOptions -> WriterOptions
+withSyntax syntax options =
+  options { writerSyntaxMap = addSyntaxDefinition syntax defaultSyntaxMap }
+
+-- | Adds writer options for Table of Content rendering.
+withTableOfContents :: WriterOptions -> WriterOptions
+withTableOfContents options = options
   { writerNumberSections  = True
   , writerTableOfContents = True
   , writerTOCDepth        = 2
