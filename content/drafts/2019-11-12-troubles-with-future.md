@@ -112,10 +112,10 @@ This works beacuse of the _eager evaluation_ nature of Future. The computation o
 # Monix Task to the rescue
 Monix is popular Scala library, providing various tools for composing asynchronous programs. One of the data type provided by this library is Task, representing (possibly) asynchronous computation. Here is the overview of key architecture differences between Task and Future:
 
-|        | evaluation | memoization             |
-|--------|------------|-------------------------|
-| Future | eager      | yes (forced)            |
-| Task   | lazy       | no (but can be enabled) |
+|            | evaluation | memoization               |
+|------------|------------|---------------------------|
+| __Future__ | _eager_    | _yes (forced)_            |
+| __Task__   | _lazy_     | _no (but can be enabled)_ |
 
 Using Task is very similar to using Future. Main difference is that instead of ExecutionContext, you need the Scheduler (which is basically just wrapper around it), but you need it only at point when you need to actually evaluate the Task:
 
