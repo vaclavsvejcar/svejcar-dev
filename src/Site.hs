@@ -48,7 +48,7 @@ main = do
           (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
         let ctx =
               boolField "page-blog" (const True)
-                <> boolField "back-button" (const True)
+                <> boolField "home-button" (const True)
                 <> constField "tag"         tag
                 <> constField "title"       ("Posts for tag: " ++ tag)
                 <> constField "posts"       list
@@ -75,7 +75,7 @@ main = do
 
     match postsPattern' $ do
       let ctx =
-            boolField "back-button" (const True)
+            boolField "home-button" (const True)
               <> boolField "page-blog" (const True)
               <> siteCtx'
       route $ directorizeDate +||+ stripContent +||+ setExtension "html"
@@ -98,7 +98,7 @@ main = do
 
     match "content/about/index.md" $ do
       let ctx =
-            boolField "back-button" (const True)
+            boolField "home-button" (const True)
               <> boolField "page-about" (const True)
               <> siteCtx'
       route $ stripContent +||+ setExtension "html"
@@ -111,7 +111,7 @@ main = do
 
     create ["archive/index.html"] $ do
       let ctx =
-            boolField "back-button" (const True)
+            boolField "home-button" (const True)
               <> boolField "page-archive" (const True)
               <> siteCtx'
       route idRoute
