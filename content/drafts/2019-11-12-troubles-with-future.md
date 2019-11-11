@@ -10,17 +10,19 @@ Scala's [Future] is integral part of the standard library and probably anyone wh
 <!-- MORE -->
 
 # So what's wrong with Future?
-_NOTE: I know that saying about something that it's wrong is pretty objective, so let's make it clear that by wrong I mean wrong from the perspection of functional programming._
+_NOTE: I know that saying about something that it's wrong is pretty objective, so let's make it clear that by wrong I mean wrong mainly from the perspective of functional programming._
 
-Scala `Future` represents a value, that might not be currently available, but will be at some point. The current design of `Future` follow these two important aspects:
+Scala's `Future` represents a value, that might not be currently available, but will be at some point of time. Current design of `Future` follows these two important aspects:
 
 - __eager evaluation__ - `Future` starts evaluating its value right after it's defined
 - __memoization__ - once the value is computed, it's shared to anyone who asks for it, without being recalculated again
 
+
+
 From these two points it might be immediately obvious that such design decisions might lead to some surprising results, summarized in following chapters.
 
 ## Breaks referential transparency
-In general, referential transparency means that any expression can be replaced with its value without changing the program's behaviour. Such expression (or function) must be pure, meaning that is has no side effect, because any side effect would break this condition. Let's start with simple example:
+In general, [referential transparency][wiki:referential_transparency] means that any expression can be replaced with its value without changing the program's behaviour. Such expression (or function) must be [pure][wiki:pure_function], meaning that is has no [side effect][wiki:side_effect], because any side effect would break this condition. Let's start with simple example:
 
 ```scala
 import scala.concurrent.Future
@@ -36,7 +38,7 @@ for {
 // hello
 ```
 
-The above code prints the _hello_ string once. According to _referential transparency_, if the _Future_ is replaced by its value, the result should be the same. Let's see:
+The above code prints the _hello_ string once. According to _referential transparency_, if the `Future` is replaced by its value, the result should be the same. Let's see:
 
 ```scala
 import scala.concurrent.Future
@@ -58,7 +60,7 @@ Now the _hello_ string is printed three times and it clearly breaks the _referen
 ## ExecutionContext everywhere
 Each `Future` needs to know where to execute itself, on which _thread_. This is why the [ExecutionContext] instance is required. In ideal world, it would be possible to define the Future value, perform some some transformations using `map`, `flatMap`, etc. and at the very end to call some kind of `run` method, which would run the entire chain using the `ExecutionContext`.
 
-Unfortunately, because of the _eager_ nature of `Future`, the `ExecutionContext` is required as implicit parameter by any of the transformation or callback methods, such as map, flatMap, foreach and onComplete. It basically means that anywhere in your codebase where you work with `Future`s, you have to somehow propagate also the `ExecutionContext`, which can become really cumbersome.
+Unfortunately, because of the _eager_ nature of `Future`, the `ExecutionContext` is required as implicit parameter by any of the transformation or callback methods, such as [map][scaladoc:Future#map], [flatMap][scaladoc:Future#flatMap], [foreach][scaladoc:Future#foreach] and [onComplete][scaladoc:Future#onComplete]. It basically means that anywhere in your codebase where you work with `Future`s, you have to somehow propagate also the `ExecutionContext`, which can become really cumbersome.
 
 ## Gotchas with for-comprehension
 Sometimes it's required to execute several independent `Future`s in parallel and combine their results into single value. Naive approach to this might be following:
@@ -89,11 +91,11 @@ Future(longRunningJob1)
 
 ```
 
-And the `flatMap` method on _Future_ is executed __after__ the _Future's_ value is evaluated, this is also clearly stated in the method's _Scaladoc_:
+And the `flatMap` method on `Future` is executed __after__ its value is evaluated, this is also clearly stated in the method's _Scaladoc_:
 
 > Creates a new future by applying a function to the successful result of this future, and returns the result of the function as the new future.
 
-The workaround for this is to declare the _Futures_ before merging them together, like this:
+The workaround for this is to declare the `Future`s before merging them together, like this:
 
 ```scala
 val futureA = Future(longRunningJob1)
@@ -107,17 +109,17 @@ for {
 } yield a + b + c
 ```
 
-This works beacuse of the _eager evaluation_ nature of Future. The computation of values for fields `futureA`, `futureB` and `futureC` starts independently before the `for` block is performed. The problem here is that the code behaves differently based on how it's structured and code author must be aware of this. If Future was _lazily evaluated_, both examples would behave the same.
+This works beacuse of the _eager evaluation_ nature of `Future`. The computation of values for fields `futureA`, `futureB` and `futureC` starts independently before the `for` block is performed. The problem here is that the code behaves differently based on how it's structured and code author must be aware of this. If `Future` was _lazily evaluated_, both examples would behave the same.
 
 # Monix Task to the rescue
-Monix is popular Scala library, providing various tools for composing asynchronous programs. One of the data type provided by this library is Task, representing (possibly) asynchronous computation. Here is the overview of key architecture differences between Task and Future:
+[Monix][web:monix] is popular _Scala_ library, providing various tools for composing asynchronous programs. One of the data type provided by this library is [Task], representing (possibly) asynchronous computation. Here is the overview of key architecture differences between `Task` and `Future`:
 
 |            | evaluation | memoization               |
 |------------|------------|---------------------------|
 | __Future__ | _eager_    | _yes (forced)_            |
 | __Task__   | _lazy_     | _no (but can be enabled)_ |
 
-Using Task is very similar to using Future. Main difference is that instead of ExecutionContext, you need the Scheduler (which is basically just wrapper around it), but you need it only at point when you need to actually evaluate the Task:
+Using `Task` is very similar to using `Future`. Main difference is that instead of `ExecutionContext`, you need the [Scheduler][scaladoc:Scheduler] (which is basically just wrapper around it), but you need it only at point when you need to actually evaluate the Task:
 
 ```scala
 import monix.eval.Task
@@ -130,7 +132,7 @@ val task1 = Task(println("hello"))
 task1.runSyncUnsafe() // executes the task, synchronously (blocking operation)
 ```
 
-_Monix Task_ also provides fine grained control over how the `Task` will be executed. By using various implementations of Sheduler, you can choose _where_ the Task will be executed (fixed thread pool, etc.) and using the various `runXY` methods on Task, you can tell _how_ the task will be executed (synchronously, asynchronously, with delay, etc). See the [official documentation][monix-documentation] for more details.
+_Monix_ also provides fine grained control over how the `Task` will be executed. By using various implementations of `Scheduler`, you can choose _where_ the `Task` will be executed (fixed thread pool, etc.) and using the various `runXY` methods, you can tell _how_ the task will be executed (synchronously, asynchronously, with delay, etc). See the [official documentation][monix-documentation] for more details.
 
 Let's now check if using `Task` instead of `Future` can solve the issues we had above.
 
@@ -224,5 +226,14 @@ As shown in simple examples in above article, [Future]'s design, mainly the _eag
 [Task]: https://monix.io/api/3.0/monix/eval/Task.html
 [monix-documentation]: https://monix.io/docs/3x/#monix-execution
 [monix-parallel_processing]: https://monix.io/docs/3x/tutorials/parallelism.html
+[scaladoc:Future#flatMap]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#flatMap[S](f:T=%3Escala.concurrent.Future[S])(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]
+[scaladoc:Future#foreach]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#foreach[U](f:T=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit
+[scaladoc:Future#map]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#map[S](f:T=%3ES)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]
+[scaladoc:Future#onComplete]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#onComplete[U](f:scala.util.Try[T]=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit
+[scaladoc:Scheduler]: https://monix.io/api/3.0/monix/execution/Scheduler.html
+[web:monix]: https://monix.io/
+[wiki:pure_function]: https://en.wikipedia.org/wiki/Pure_function
+[wiki:referential_transparency]: https://en.wikipedia.org/wiki/Referential_transparency
+[wiki:side_effect]: https://en.wikipedia.org/wiki/Side_effect_(computer_science)
 
 
