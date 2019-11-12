@@ -17,8 +17,6 @@ Scala's `Future` represents a value, that might not be currently available, but 
 - __eager evaluation__ - `Future` starts evaluating its value right after it's defined
 - __memoization__ - once the value is computed, it's shared to anyone who asks for it, without being recalculated again
 
-
-
 From these two points it might be immediately obvious that such design decisions might lead to some surprising results, summarized in following chapters.
 
 ## Breaks referential transparency
@@ -132,7 +130,7 @@ val task1 = Task(println("hello"))
 task1.runSyncUnsafe() // executes the task, synchronously (blocking operation)
 ```
 
-_Monix_ also provides fine grained control over how the `Task` will be executed. By using various implementations of `Scheduler`, you can choose _where_ the `Task` will be executed (fixed thread pool, etc.) and using the various `runXY` methods, you can tell _how_ the task will be executed (synchronously, asynchronously, with delay, etc). See the [official documentation][monix-documentation] for more details.
+_Monix_ also provides fine grained control over how the `Task` will be executed. By using various implementations of `Scheduler`, you can choose _where_ the `Task` will be executed (fixed thread pool, etc.) and using the various `runXY` methods, you can tell _how_ the task will be executed (synchronously, asynchronously, with delay, etc). See the [official documentation][web:monix_execution] for more details.
 
 Let's now check if using `Task` instead of `Future` can solve the issues we had above.
 
@@ -199,21 +197,21 @@ result.runSyncUnsafe()
 Written this way, these three _Tasks_ are executed synchronously, because the _for-comprehension_ is again desugared into `flatMap` calls and `flatMap` waits until the result of previous `Task` is computed. So far it's pretty same to the `Future`. Let's see what happens if the `Task` values are defined outside the `for` block:
 
 ```scala
-  val task1 = Task(longRunningJob1)
-  val task2 = Task(longRunningJob2)
-  val task3 = Task(longRunningJob3)
+val task1 = Task(longRunningJob1)
+val task2 = Task(longRunningJob2)
+val task3 = Task(longRunningJob3)
 
 
-  val result = for {
-    a <- task1
-    b <- task2
-    c <- task3
-  } yield a + b + c
+val result = for {
+  a <- task1
+  b <- task2
+  c <- task3
+} yield a + b + c
 
-  result.runSyncUnsafe()
+result.runSyncUnsafe()
 ```
 
-And, unlike `Future`, the result is the same, _Tasks_ are again executed synchronously. This is because unlike `Future`, `Task` is always _lazily evaluated_ so it really doesn't matter where in the code you define it. If you want to execute multiple `Task` values in parallel, you have to explicitly do that on your own (see documentation about [parallel processing][monix-parallel_processing]).
+And, unlike `Future`, the result is the same, _Tasks_ are again executed synchronously. This is because unlike `Future`, `Task` is always _lazily evaluated_ so it really doesn't matter where in the code you define it. If you want to execute multiple `Task` values in parallel, you have to explicitly do that on your own (see documentation about [parallel processing][web:monix_parallelism]).
 
 # Conclusion
 As shown in simple examples in above article, [Future]'s design, mainly the _eager evaluation_ and _memoization_ can lead to some unexpected situations, mainly when there's need to use it in functional codebase. [Monix Task][Task] is nice alternative that preserves some fundamental principles of _functional programming_, such as _referential transparency_, allows to write more clean codebase by reducing the need of `ExecutionContext` everywhere and provides more fine grained control over _where_ and _how_ it's executed.
@@ -224,16 +222,14 @@ As shown in simple examples in above article, [Future]'s design, mainly the _eag
 [Future]: https://www.scala-lang.org/api/currentscala/concurrent/Future.html
 [Slick]: http://slick.lightbend.com/
 [Task]: https://monix.io/api/3.0/monix/eval/Task.html
-[monix-documentation]: https://monix.io/docs/3x/#monix-execution
-[monix-parallel_processing]: https://monix.io/docs/3x/tutorials/parallelism.html
+[web:monix_parallelism]: https://monix.io/docs/3x/tutorials/parallelism.html
 [scaladoc:Future#flatMap]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#flatMap[S](f:T=%3Escala.concurrent.Future[S])(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]
 [scaladoc:Future#foreach]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#foreach[U](f:T=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit
 [scaladoc:Future#map]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#map[S](f:T=%3ES)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]
 [scaladoc:Future#onComplete]: https://www.scala-lang.org/api/current/scala/concurrent/Future.html#onComplete[U](f:scala.util.Try[T]=%3EU)(implicitexecutor:scala.concurrent.ExecutionContext):Unit
 [scaladoc:Scheduler]: https://monix.io/api/3.0/monix/execution/Scheduler.html
 [web:monix]: https://monix.io/
+[web:monix_execution]: https://monix.io/docs/3x/#monix-execution
 [wiki:pure_function]: https://en.wikipedia.org/wiki/Pure_function
 [wiki:referential_transparency]: https://en.wikipedia.org/wiki/Referential_transparency
 [wiki:side_effect]: https://en.wikipedia.org/wiki/Side_effect_(computer_science)
-
-
