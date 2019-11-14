@@ -1,26 +1,24 @@
 ---
 title: Troubles with Future
 description: Scala's Future provides easy way to run code asynchronously, but also has some pitfals. Let's discuss the biggest issues and compare Future to Monix Task.
-tags: scala, monix, future
+tags: scala, monix, future, fp
 tableOfContents: true
 ---
 
-Scala's [Future] is integral part of the standard library and probably anyone who needs to execute some code asynchronously used it at least once. It's also used by many and many popular libraries, such as [Apache Spark], [Akka] or [Slick]. However, because of the way how it's designed, its use can lead to some surprising situations. This blog post summarizes some pitfalls and introduces [Monix Task][Task] as more powerful alternative.
+Anyone who works with _Scala_ for a while probably used, or at least seen the [Future] class. Being part of the standard library, `Future` provides a way how to express asynchronous computation or value. It's used by many and many popular _Scala_ libraries, such as [Apache Spark], [Akka] or [Slick], and the use of `Future` itself is also pretty easy. But it also comes with some drawbacks, caused mainly by its design. This blog post summarizes the most common pitfals and introduces [Monix Task][Task] as more powerful and robust alternative.
 
 <!-- MORE -->
 
-# So what's wrong with Future?
-_NOTE: I know that saying about something that it's wrong is pretty objective, so let's make it clear that by wrong I mean wrong mainly from the perspective of functional programming._
-
-Scala's `Future` represents a value, that might not be currently available, but will be at some point of time. Current design of `Future` follows these two important aspects:
+# What's wrong with Future?
+Scala's `Future` represents a value, that might not be currently available, but will be at some point of time (if no error occurs). Current implementation is based on these design decisions: 
 
 - __eager evaluation__ - `Future` starts evaluating its value right after it's defined
 - __memoization__ - once the value is computed, it's shared to anyone who asks for it, without being recalculated again
 
-From these two points it might be immediately obvious that such design decisions might lead to some surprising results, summarized in following chapters.
+Unfortunately, this design can lead to some unexpected situations, mainly when some _side effects_ happen inside the computation.
 
 ## Breaks referential transparency
-In general, [referential transparency][wiki:referential_transparency] means that any expression can be replaced with its value without changing the program's behaviour. Such expression (or function) must be [pure][wiki:pure_function], meaning that is has no [side effect][wiki:side_effect], because any side effect would break this condition. Let's start with simple example:
+In general, [referential transparency][wiki:referential_transparency] means that any expression can be replaced with its value without changing the program's behaviour. Such expression (or function) must be [pure][wiki:pure_function], meaning that is has no [side effect][wiki:side_effect], because any _side effect_ would break this condition. Let's start with simple example:
 
 ```scala
 import scala.concurrent.Future
@@ -36,7 +34,7 @@ for {
 // hello
 ```
 
-The above code prints the _hello_ string once. According to _referential transparency_, if the `Future` is replaced by its value, the result should be the same. Let's see:
+The above code prints the _hello_ string once. According to _referential transparency_, if the `future` variable is replaced by the value, result should be the same:
 
 ```scala
 import scala.concurrent.Future
@@ -53,12 +51,12 @@ for {
 // hello
 ```
 
-Now the _hello_ string is printed three times and it clearly breaks the _referential transparency_. Why is that? Because `Future` is __eagerly evaluated__ and __memoizes__ it's value. That means that code inside `Future` is evaluated right after it's defined, and it's evaluated only once, remembering the computed value. And the eager evaluation leads to another problem...
+Now the _hello_ string is printed three times and this clearly breaks the _referential transparency_. Why is that? Because `Future` is __eagerly evaluated__ and __memoizes__ it's value. That means that code inside `Future` is evaluated right after it's defined, and it's evaluated only once, remembering the computed value. And the eager evaluation leads to another problem...
 
 ## ExecutionContext everywhere
-Each `Future` needs to know where to execute itself, on which _thread_. This is why the [ExecutionContext] instance is required. In ideal world, it would be possible to define the Future value, perform some some transformations using `map`, `flatMap`, etc. and at the very end to call some kind of `run` method, which would run the entire chain using the `ExecutionContext`.
+Each `Future` needs to know where to execute itself, on which _thread_. This is why the [ExecutionContext] instance is required. In ideal world, it would be possible to define the `Future` value, perform some some transformations using `map`, `flatMap`, etc. and at the very end to call some kind of `run` method, which would run the entire chain using the given `ExecutionContext`.
 
-Unfortunately, because of the _eager_ nature of `Future`, the `ExecutionContext` is required as implicit parameter by any of the transformation or callback methods, such as [map][scaladoc:Future#map], [flatMap][scaladoc:Future#flatMap], [foreach][scaladoc:Future#foreach] and [onComplete][scaladoc:Future#onComplete]. It basically means that anywhere in your codebase where you work with `Future`s, you have to somehow propagate also the `ExecutionContext`, which can become really cumbersome.
+Unfortunately, because of the _eager_ nature of `Future`, the `ExecutionContext` is required as implicit parameter by any of the transformation or callback methods, such as [map][scaladoc:Future#map], [flatMap][scaladoc:Future#flatMap], [foreach][scaladoc:Future#foreach] and [onComplete][scaladoc:Future#onComplete]. It basically means that everywhere in your codebase where you work with `Future`s, you have to somehow propagate also the `ExecutionContext`, which quickly becomes really cumbersome.
 
 ## Gotchas with for-comprehension
 Sometimes it's required to execute several independent `Future`s in parallel and combine their results into single value. Naive approach to this might be following:
@@ -107,17 +105,17 @@ for {
 } yield a + b + c
 ```
 
-This works beacuse of the _eager evaluation_ nature of `Future`. The computation of values for fields `futureA`, `futureB` and `futureC` starts independently before the `for` block is performed. The problem here is that the code behaves differently based on how it's structured and code author must be aware of this. If `Future` was _lazily evaluated_, both examples would behave the same.
+This works beacuse of the _eager evaluation_ nature of `Future`. The computation of values for fields `futureA`, `futureB` and `futureC` starts independently and before the `for` block is performed. The problem here is that the code behaves differently based on how it's structured and programmer must be aware of this. If `Future` was _lazily evaluated_, both examples would behave the same.
 
 # Monix Task to the rescue
-[Monix][web:monix] is popular _Scala_ library, providing various tools for composing asynchronous programs. One of the data type provided by this library is [Task], representing (possibly) asynchronous computation. Here is the overview of key architecture differences between `Task` and `Future`:
+[Monix][web:monix] is popular _Scala_ library, providing various tools for composing asynchronous programs. One of the provided data types is [Task], representing (possibly) asynchronous computation. Here is the overview of key architecture differences between `Task` and `Future`:
 
 |            | evaluation | memoization               |
 |------------|------------|---------------------------|
 | __Future__ | _eager_    | _yes (forced)_            |
 | __Task__   | _lazy_     | _no (but can be enabled)_ |
 
-Using `Task` is very similar to using `Future`. Main difference is that instead of `ExecutionContext`, you need the [Scheduler][scaladoc:Scheduler] (which is basically just wrapper around it), but you need it only at point when you need to actually evaluate the Task:
+Using `Task` is very similar to using `Future`. Main difference is that instead of `ExecutionContext`, you need the [Scheduler][scaladoc:Scheduler] (which is basically just wrapper around it), but contrary to `Future` it's required only when the value is evaluated.
 
 ```scala
 import monix.eval.Task
@@ -130,9 +128,9 @@ val task1 = Task(println("hello"))
 task1.runSyncUnsafe() // executes the task, synchronously (blocking operation)
 ```
 
-_Monix_ also provides fine grained control over how the `Task` will be executed. By using various implementations of `Scheduler`, you can choose _where_ the `Task` will be executed (fixed thread pool, etc.) and using the various `runXY` methods, you can tell _how_ the task will be executed (synchronously, asynchronously, with delay, etc). See the [official documentation][web:monix_execution] for more details.
+_Monix_ also provides fine grained control over how the `Task` will be executed. By using various implementations of `Scheduler`, you can choose _where_ the `Task` will be executed (fixed _thread pool_, etc.) and using the various `runXY` methods, you can tell _how_ the task will be executed (synchronously, asynchronously, with delay, etc). See the [official documentation][web:monix_execution] for more details.
 
-Let's now check if using `Task` instead of `Future` can solve the issues we had above.
+Let's check if using `Task` for same scenarios can solve the issues we had with `Future`.
 
 ## Preserves referential transparency
 As shown earlier, `Future` breaks rules of _referential transparency_, which might lead to some surprising errors, mainly if `Future` performs some _side effects_. Let's compare it with `Task`.
@@ -172,10 +170,10 @@ result.runSyncUnsafe()
 // hello
 ```
 
-And output is the same for both of the examples, which means that `Task` preserves _referential transparency_.
+Output is the same for both examples, which means that `Task` preserves _referential transparency_.
 
 ## Scheduler needed only for evaluation
-One of the ugly properties of `Future` is that methods used for value manipulation, such `map` and `flatMap`, requires implicit value of `ExecutionContext` to be in scope, so you need to propagate it through your codebase. `Task` requires sheduler only for its execution using the `runXY` methods, so there's no need to pollute your codebase with its instances.
+One of the ugly properties of `Future` is that methods used for value manipulation, such `map` and `flatMap`, requires implicit value of `ExecutionContext` to be in scope, so you need to propagate it through your codebase. `Task` requires `Scheduler` only for its execution using the `runXY` methods, so there's no need to pollute your codebase with its instances.
 
 ## Consistent behaviour with for-comprehension
 Earlier we discussed that using multiple values of `Future` in _for-comprehension_ might result in different execution, based on how the source code is structured. Let's compare it with the same example, rewritten using the `Task`:
@@ -214,7 +212,7 @@ result.runSyncUnsafe()
 And, unlike `Future`, the result is the same, _Tasks_ are again executed synchronously. This is because unlike `Future`, `Task` is always _lazily evaluated_ so it really doesn't matter where in the code you define it. If you want to execute multiple `Task` values in parallel, you have to explicitly do that on your own (see documentation about [parallel processing][web:monix_parallelism]).
 
 # Conclusion
-As shown in simple examples in above article, [Future]'s design, mainly the _eager evaluation_ and _memoization_ can lead to some unexpected situations, mainly when there's need to use it in functional codebase. [Monix Task][Task] is nice alternative that preserves some fundamental principles of _functional programming_, such as _referential transparency_, allows to write more clean codebase by reducing the need of `ExecutionContext` everywhere and provides more fine grained control over _where_ and _how_ it's executed.
+As shown in simple examples in above article, the [Future]'s design (_eager evaluation_ and _memoization_) can lead to some unexpected situations, mainly when combined with _side effects_. [Monix Task][Task] is nice alternative that preserves some fundamental principles of _functional programming_, such as _referential transparency_, allows to write more clean codebase by reducing the need of `ExecutionContext` everywhere and provides more fine grained control over _where_ and _how_ it's executed.
 
 [Akka]: https://akka.io/
 [Apache Spark]: https://spark.apache.org/
