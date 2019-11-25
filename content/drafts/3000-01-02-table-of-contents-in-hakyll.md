@@ -18,7 +18,7 @@ I started with summing up features I'd like to have in the ideal implementation:
 - automatic numbering for _table of contents_ anchor links and also blog post headings
 - render _table of contents_ only for full blog posts, not for previews on landing page
 
-Fortunately all of these are solvable pretty easily, as shown in following chapters.
+Fortunately all of these can be solved pretty easily, as shown in following chapters.
 
 # Implementation
 _Pandoc_ already contains support for rendering _table of contents_ and it can be enabled by setting the [writerTableOfContents][haddock:pandoc:writerTableOfContents] field from [WriterOptions][haddock:pandoc:WriterOptions] to `True`. Fortunately _Hakyll_ integrates this option as well and such rendered _table of contents_ is then available as `$toc$` context field.
@@ -31,10 +31,11 @@ withTOC = defaultHakyllWriterOptions
         { writerNumberSections  = True
         , writerTableOfContents = True
         , writerTOCDepth        = 2
+        , writerTemplate        = Just "$toc$\n$body$"
         }
 ```
 
-These `WriterOptions` can then be used for rendering _blog posts_ like this:
+The `writerNumberSections` option is worth mentioning, because it automatically ads numbering to both table of content links and the headings inside blog post (as you can see also on this page). These `WriterOptions` can then be used for rendering _blog posts_ like this:
 
 ```haskell
 match "posts/*" $ do
@@ -66,10 +67,47 @@ match "posts/*" $ do
   compile $ do
     underlying <- getUnderlying
     toc        <- getMetadataField underlying "tableOfContents"
-    let writerOptions' = maybe defaultHakyllWriterOptions (const $ withTOC) toc
+    let writerOptions' = maybe defaultHakyllWriterOptions (const withTOC) toc
     pandocCompilerWith defaultHakyllReaderOptions writerOptions'
       >>= loadAndApplyTemplate "templates/default.html" defaultContext
 ```
+
+## Adding stylesheets
+Although the above code renders the _table of content_ for blog posts and adds automatic numbering to heading, it would be still nice to add some _CSS_ to make things better looking.
+
+### Adding styles to table of contents
+First thing we need to do is to wrap the `table of contents` block into some `<div>` container with custom _class_, so we can refer it in _stylesheet_. This can be done by changing the `writerTemplate` field:
+
+```haskell
+withTOC :: WriterOptions
+withTOC = defaultHakyllWriterOptions
+        { writerNumberSections  = True
+        , writerTableOfContents = True
+        , writerTOCDepth        = 2
+        , writerTemplate        = Just "\n<div class=\"toc\"><div class=\"header\">Table of Contents</div>\n$toc$\n</div>\n$body$"
+        }
+```
+
+Now we can add proper styling to the `.toc` _CSS_ class. If you want to change styles for the section numbers of _table of contents_ (as used on this page), you can modify it using the `.toc-section-number` class.
+
+### Adding styles to headings
+Headings itself now contain the automatically generated section numbers, and it's likely that you'd like to visually separate them from the rest of the heading. This can be done by adding styles to `.toc-section-number` class.
+
+## Making headings clickable
+One last _nice to have_ feature would be to transform headings inside blog post into _anchors_, so they can be both clicked but also the links can be copied by users for sharing exact part of your blog post. Unfortunately _Pandoc_ doesn't render headings as anchors by default and I don't feel to be skilled enough yet with _Pandoc_ to modify its _AST_, so for now I used _quick&dirty_ solution using short _JavaScript_ and [jQuery][web:jquery]. It's not that big deal in this case, because this _DOM_ modification doesn't cause any visual disruptions when the page is loading and it's loaded much earlier before user is able to do any interactions.
+
+```javascript
+$('.post-content').children('h1, h2, h3, h4, h5').each(function () {
+  var id = $(this).attr('id');
+  var text = $(this).html();
+
+  $(this)
+    .html('')
+    .append('<a href="#' + id + '" class="header-link">' + text + '</a>');
+});
+```
+
+In the above code, `.post-content` is the enclosing element of the blog post.
  
 # Conclusion
 todo
@@ -78,5 +116,6 @@ todo
 [haddock:pandoc:writerTableOfContents]: https://hackage.haskell.org/package/pandoc-2.8/docs/Text-Pandoc-Options.html#v:writerTableOfContents
 [web:hakyll]: https://jaspervdj.be/hakyll/
 [web:haskell]: https://www.haskell.org/
+[web:jquery]: https://jquery.com/
 [web:pandoc]: https://pandoc.org/
 [github:svejcar-dev]: https://github.com/vaclavsvejcar/svejcar-dev
