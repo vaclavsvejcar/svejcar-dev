@@ -94,9 +94,10 @@ Now we can add proper styling to the `.toc` _CSS_ class. If you want to change s
 Headings itself now contain the automatically generated section numbers, and it's likely that you'd like to visually separate them from the rest of the heading. This can be done by adding styles to `.toc-section-number` class.
 
 ## Making headings clickable
-One last _nice to have_ feature would be to transform headings inside blog post into _anchors_, so they can be both clicked but also the links can be copied by users for sharing exact part of your blog post. Unfortunately _Pandoc_ doesn't render headings as anchors by default and I don't feel to be skilled enough yet with _Pandoc_ to modify its _AST_, so for now I used _quick&dirty_ solution using short _JavaScript_ and [jQuery][web:jquery]. It's not that big deal in this case, because this _DOM_ modification doesn't cause any visual disruptions when the page is loading and it's loaded much earlier before user is able to do any interactions.
+One last _nice to have_ feature would be to transform headings inside blog post into _anchors_, so they can be both clicked and the links can be copied by users to share exact part of your blog post. Unfortunately _Pandoc_ doesn't render headings as anchors by default. There is probably some way how to modify the _AST_ and change this, but for now I was pretty happy with _quick&dirty_ solution based on  _JavaScript_ and [jQuery][web:jquery]. It's not that big deal in this case, because this _DOM_ modification doesn't cause any visual disruptions when the page is loading and it's loaded much earlier before user is able to do any interactions.
 
 ```javascript
+// '.post-content' is the enclosing element of the blog post
 $('.post-content').children('h1, h2, h3, h4, h5').each(function () {
   var id = $(this).attr('id');
   var text = $(this).html();
@@ -106,11 +107,10 @@ $('.post-content').children('h1, h2, h3, h4, h5').each(function () {
     .append('<a href="#' + id + '" class="header-link">' + text + '</a>');
 });
 ```
-
-In the above code, `.post-content` is the enclosing element of the blog post.
  
 # Conclusion
-todo
+Adding _table of contents_ to your longer blog posts can help visitors navigate the content, mainly for longer blog posts. Fortunately in case of _Hakyll_, the implementation itself is not that difficult, mainly thanks to the underlying _Pandoc_. And with help of some _CSS_ and _JavaScript_, we can make pretty decent looking _table of content_ that would match our specific needs.
+
 
 [haddock:pandoc:WriterOptions]: https://hackage.haskell.org/package/pandoc-2.8/docs/Text-Pandoc-Options.html#v:WriterOptions
 [haddock:pandoc:writerTableOfContents]: https://hackage.haskell.org/package/pandoc-2.8/docs/Text-Pandoc-Options.html#v:writerTableOfContents
