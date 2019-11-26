@@ -12,7 +12,7 @@ I spent some time by searching optimal solution and found that [Pandoc][web:pand
 <!-- MORE -->
 
 # Expected features
-I started with summing up features I'd like to have in the ideal implementation:
+As a first step, I wrote down all the expected features I'd like to have in the ideal implementation:
 
 - option to enable / disable _table of contents_ per blog post
 - automatic numbering for _table of contents_ anchor links and also blog post headings
@@ -40,14 +40,14 @@ The `writerNumberSections` option is worth mentioning, because it automatically 
 ```haskell
 match "posts/*" $ do
   route   $ setExtension "html"
-  compile $ pandocCompilerWith defaultHakyllReaderOptions withToc
+  compile $ pandocCompilerWith defaultHakyllReaderOptions withTOC
       >>= loadAndApplyTemplate "templates/default.html" defaultContext
 ```
 
 Problem with this implementation is that _table of contents_ is rendered always for each _blog post_, which may be unwanted, mainly for shorter ones. Let's see how this can be solved.
 
 ## Enabling per blog post
-One way how to implement enabling/disabling of _table of contents_ per blog post is to detect presence of some custom field in _YAML_ header, present in each blog post _markdown_ file. Let's say we want to have it disabled by default and enable it by adding following field to _YAML_ header:
+One way how to implement enabling/disabling of _table of contents_ per blog post is to detect presence of some custom field in _YAML_ header, present in each blog post _markdown_ file. Let's say we want to have it disabled by default and enable it by adding `tableOfContents` field to _YAML_ header:
 
 ```yaml
 ---
@@ -59,7 +59,7 @@ tableOfContents: true
 Markdown text here...
 ```
 
-Based on presence of this field, we would choose whether to render or not the _table of contents_:
+Based on presence of this field, we would choose whether to render or not the _table of contents_ (we aren't checking the actual value, just whether the field is present or not):
 
 ```haskell
 match "posts/*" $ do
@@ -109,7 +109,7 @@ $('.post-content').children('h1, h2, h3, h4, h5').each(function () {
 ```
  
 # Conclusion
-Adding _table of contents_ to your longer blog posts can help visitors navigate the content, mainly for longer blog posts. Fortunately in case of _Hakyll_, the implementation itself is not that difficult, mainly thanks to the underlying _Pandoc_. And with help of some _CSS_ and _JavaScript_, we can make pretty decent looking _table of content_ that would match our specific needs.
+Adding _table of contents_ to your longer blog posts (mainly the longer ones) can help visitors navigate the content. Fortunately in case of _Hakyll_, the implementation itself is not that difficult, mainly thanks to the underlying _Pandoc_. And with help of some _CSS_ and _JavaScript_, we can make pretty decent looking _table of content_ that would match our specific needs.
 
 
 [haddock:pandoc:WriterOptions]: https://hackage.haskell.org/package/pandoc-2.8/docs/Text-Pandoc-Options.html#v:WriterOptions
