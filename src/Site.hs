@@ -140,7 +140,7 @@ main = do
           route $ setExtension "css"
           compile (fmap compressCss <$> sassCompiler)
 
-    match "assets/images/*.jpg" $ do
+    match "assets/images/**" $ do
       route idRoute
       compile copyFileCompiler
 

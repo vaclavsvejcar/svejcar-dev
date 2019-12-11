@@ -71,6 +71,10 @@
 }
 
 .blog-post.full {
+  figure {
+    font-size: .8em;
+  }
+  
   .header-section-number {
     color: $color-light-2;
     font-family: "Merriweather", serif;
