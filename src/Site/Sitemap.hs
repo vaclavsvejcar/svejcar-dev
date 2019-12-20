@@ -29,13 +29,13 @@ import           System.IO.Error
 import           Text.XML.Light
 
 
-data SitemapConfiguration = SitemapConfiguration {
-    sitemapExtensions :: [String]
+data SitemapConfiguration = SitemapConfiguration
+  { sitemapExtensions :: [String]
   , sitemapChangeFreq :: FilePath -> ChangeFrequency
   , sitemapPriority   :: FilePath -> Double
   , sitemapBase       :: String
   , sitemapRewriter   :: FilePath -> FilePath
-}
+  }
 
 data ChangeFrequency = Always
                      | Hourly

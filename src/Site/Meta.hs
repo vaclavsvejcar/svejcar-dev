@@ -14,8 +14,8 @@ module Site.Meta
   )
 where
 
-import           Paths_svejcar_dev              ( version )
 import           Data.Version                   ( showVersion )
+import           Paths_svejcar_dev              ( version )
 
 -- | Returns build version (specified in /package.yaml/).
 buildVersion :: String

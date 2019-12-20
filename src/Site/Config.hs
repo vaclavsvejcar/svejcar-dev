@@ -17,11 +17,10 @@ where
 import           Data.Default.Class
 
 -- | Site configuration.
-data SiteConfig =
-  SiteConfig
-    { scGaId     :: Maybe String -- ^ /Google Analytics/ unique ID
-    , scSiteRoot :: String -- ^ Root URL of the site
-    }
+data SiteConfig = SiteConfig
+  { scGaId     :: Maybe String -- ^ /Google Analytics/ unique ID
+  , scSiteRoot :: String       -- ^ Root URL of the site
+  }
 
 instance Default SiteConfig where
   def = SiteConfig { scGaId = Nothing, scSiteRoot = "https://example.com" }

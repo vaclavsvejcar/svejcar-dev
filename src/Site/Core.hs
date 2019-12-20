@@ -33,13 +33,13 @@ import           Hakyll                  hiding ( tagCloudField )
 import           Site.Config
 import           Site.Contexts                  ( postCtx )
 import           Site.Types                     ( RenderMode(..) )
+import           System.Console.Pretty          ( Color(..)
+                                                , color
+                                                )
 import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
 import           System.FilePath                ( splitExtension )
-import           System.Console.Pretty          ( Color(..)
-                                                , color
-                                                )
 
 -- | Cleans up generated files used for Draft mode.
 cleanDrafts :: IO ()
@@ -118,10 +118,9 @@ stripStatic = stripRoute "static/"
 
 -- | Strips "index.html" from given URL string.
 stripIndex :: String -> String
-stripIndex url =
-  if "index.html" `isSuffixOf` url -- && elem (head url) ("/." :: String)
-    then take (length url - 10) url
-    else url
+stripIndex url = if "index.html" `isSuffixOf` url -- && elem (head url) ("/." :: String)
+  then take (length url - 10) url
+  else url
 
 -- | Infix version of 'composeRoutes'.
 (+||+) :: Routes -> Routes -> Routes

@@ -21,9 +21,9 @@ import           Skylighting.Types              ( Syntax )
 import           Text.Pandoc.Options            ( WriterOptions
                                                 , writerNumberSections
                                                 , writerSyntaxMap
+                                                , writerTOCDepth
                                                 , writerTableOfContents
                                                 , writerTemplate
-                                                , writerTOCDepth
                                                 )
 
 

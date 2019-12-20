@@ -16,15 +16,13 @@ where
 
 import           Data.ByteString.Builder        ( toLazyByteString )
 import qualified Data.ByteString.Lazy.Char8    as CL
-import           Language.JavaScript.Parser
-import           Language.JavaScript.Process.Minify
 import           Hakyll
 import           Hakyll.Web.Sass                ( sassCompiler )
+import           Language.JavaScript.Parser
+import           Language.JavaScript.Process.Minify
 
 
 -- | Minifies JavaScript content.
 compressJsCompiler :: Compiler (Item String)
 compressJsCompiler = fmap minify <$> getResourceString
- where
-  minify :: String -> String
-  minify = CL.unpack . toLazyByteString . renderJS . minifyJS . readJs
+  where minify = CL.unpack . toLazyByteString . renderJS . minifyJS . readJs
