@@ -19,7 +19,7 @@ figure:nth-child(41) img {
 }
 </style>
 
-When I started to learn [Haskell][web:haskell], I hoped that I'll be able to get similar _IDE_ experience as I have with [Scala][web:scala] and [IntelliJ Idea][web:idea]. Unfortunately the opposite was true. There are some _Haskell_ plugins for _Idea_, but none of them worked for me (mostly due to crashes or hangs) and they seem to be pretty immature as well. But I found pretty good feedback on using _VSCode_ for _Haskell_ development, so I tried it and with help of few _plugins_, you get pretty decent _IDE-like_ experience with syntax highlighting, error reporting and code completion. In this blogpost, I'll present my _VSCode_ setup I use for (almost) everyday _Haskell_ developing.
+When I started to learn [Haskell][web:haskell], I hoped that I'll be able to get similar _IDE_ experience as I have with [Scala][web:scala] and [IntelliJ Idea][web:idea]. Unfortunately the opposite was true. There are some _Haskell_ plugins for _Idea_, but none of them worked for me (mostly due to crashes or hangs) and they seem to be pretty immature as well. But I found pretty good feedback on using _VSCode_ for _Haskell_ development, so I tried it and with help of few _extensions_, you get pretty decent _IDE-like_ experience with syntax highlighting, error reporting and code completion. In this blogpost, I'll present my _VSCode_ setup I use for (almost) everyday _Haskell_ development.
 
 <!-- MORE -->
 
@@ -40,7 +40,7 @@ We definitely want to have some syntax highlighting for the _Haskell_ code. This
 
 ![syntax highlighting in action][img:syntax-highlighting]
 
-## Brittany - the source formatter
+## Brittany - the code formatter
 [Brittany][github:brittany] is one of the popular source code formatters for _Haskell_ that integrates well with other tools you'll install based on this tutorial. We need to install both the _Britanny_ executable itself and the _VSCode extension_.
 
 ### Installing the executable
@@ -101,7 +101,8 @@ Last step is to install the [Haskell Language Server][vscode:hls] extension. Thi
 ![displaying documentation on mouseover][img:hls]
 
 # Summary
-todo
+I hope that one day the status of tooling for _Haskell_ will be at least as good as it is for _Scala_, where the _IntelliJ Idea_ really provides great development experience. On the other hand, _VSCode_ is pretty nice lightweight editor and with good choice of extensions, it still does great job for _Haskell_ development. I really like the _HLint_ integration, that shows possible code improvements, which is extra helpful for beginner _Haskellers_. And the _Haskell IDE Engine_ gives nice features such as showing documentation, displaying code errors, etc. Main drawback is the complexity of the setup, mainly for the _Haskell IDE Engine_ where it needs to be done per _GHC_ version, but hopefully this will be improved in the future releases.
+
 
 [img:hlint]: /assets/images/my-vscode-setup-for-haskell/hlint.png
 [img:hls]: /assets/images/my-vscode-setup-for-haskell/hls.png
