@@ -106,6 +106,7 @@ aside {
   z-index: 100;
 
   background: $color-dark-primary;
+  background-image: url("/assets/images/aside.png");
   color: $color-light-1;
 
   a,
@@ -151,35 +152,31 @@ aside > section.about {
 }
 
 aside > nav {
-  margin-top: 50px;
-  text-align: center;
-  font-size: 0.9em;
-
   > ul {
-    margin: 0;
+    margin: $padding-medium 0;
     padding: 0;
-    list-style: none;
+
+    text-align: center;
 
     > li {
-      margin: 0;
-      padding: 0;
-      display: inline-block;
-      margin: -1px;
+      display: block;
+      margin: 5px 0;
 
-      > a,
-      > a:visited {
-        color: $color-light-2;
-        padding: 5px 10px;
+      > a {
+        display: block;
+        font-size: 1.5em;
+
         transition: color 100ms ease;
-
-        &.active,
-        &:hover {
-          color: $color-light-1;
-        }
       }
 
-      &:not(:last-child) {
-        border-right: 1px $color-light-3 solid;
+      > a,
+      a:visited {
+        color: $color-light-2;
+      }
+
+      > a.active,
+      a:hover {
+        color: $color-light-1;
       }
     }
   }
@@ -297,7 +294,8 @@ footer {
     margin-right: 0;
     padding: 0 $padding-small;
 
-    background: $color-dark-primary;
+    background-image: url('/assets/images/aside.png');
+    background-position: bottom;
 
     a,
     a:visited {

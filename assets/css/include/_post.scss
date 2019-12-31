@@ -130,7 +130,8 @@
 
         transition: opacity 100ms ease;
 
-        content: "\00b6";
+        font-family: "FontAwesome";
+        content: "\f0c1";
       }
 
       a:hover:before {
