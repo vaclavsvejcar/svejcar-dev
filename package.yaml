@@ -4,7 +4,7 @@ github: "vaclavsvejcar/svejcar-dev"
 license: Apache-2.0
 author: "Vaclav Svejcar"
 maintainer: "vaclav.svejcar@gmail.com"
-copyright: "2019 Vaclav Svejcar"
+copyright: "2019-2020 Vaclav Svejcar"
 
 dependencies:
   - base >= 4.7 && < 5
