@@ -104,7 +104,7 @@ runSite rules = do
     _            -> return ()
 
   when draftMode
-    $ putStrLn (color Yellow "!!!!!!!!! RUNNING IN DRAFT MODE !!!!!!!!!")
+    $ putStrLn (color Yellow "🚧 RUNNING IN DRAFT MODE 🚧")
   withArgs args' $ hakyllWith hakyllConf (rules mode)
 
 stripContent :: Routes
