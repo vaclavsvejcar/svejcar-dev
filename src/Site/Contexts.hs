@@ -14,27 +14,34 @@ module Site.Contexts
   )
 where
 
+import qualified Data.Text                     as T
 import           Hakyll                  hiding ( tagCloudField )
 import           Site.Config
+import           Site.Slug                      ( slugify )
 import           Site.Tags                      ( tagCloudField
                                                 , tagLinks
                                                 )
 
 -- | Creates a 'Context' for blog posts.
 postCtx :: SiteConfig -> Tags -> Context String
-postCtx config tags =
-  dateField "date" "%e %B %Y"
-    <> dateField "datetime" "%Y-%m-%d"
-    <> tagLinks getTags "tags" tags
-    <> siteCtx config tags
+postCtx config tags = mconcat
+  [ dateField "date"     "%e %B %Y"
+  , dateField "datetime" "%Y-%m-%d"
+  , tagLinks getTags "tags" tags
+  , siteCtx config tags
+  ]
 
 -- | Creates a 'Context' for main template.
 siteCtx :: SiteConfig -> Tags -> Context String
-siteCtx config tags =
-  tagCloudField "cloud" 60 150 tags
-    <> maybeField "gaId" (scGaId config)
-    <> defaultContext
+siteCtx config tags = mconcat
+  [ tagCloudField "cloud" 60 150 tags
+  , maybeField "gaId" (scGaId config)
+  , pageIdField "pageId"
+  , defaultContext
+  ]
 
--- | Creates a 'field' for given key from optional value.
 maybeField :: String -> Maybe String -> Context a
 maybeField key = maybe mempty (constField key)
+
+pageIdField :: String -> Context a
+pageIdField = mapContext (T.unpack . slugify . T.pack) . titleField
