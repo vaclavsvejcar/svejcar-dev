@@ -46,14 +46,15 @@ main = do
       compile $ do
         list <- postList'
           (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
-        let ctx =
-              boolField "page-blog" (const True)
-                <> boolField "home-button" (const True)
-                <> constField "tag"         tag
-                <> constField "title"       ("Posts for tag: " ++ tag)
-                <> constField "posts"       list
-                <> constField "description" ("Posts for tag: " ++ tag)
-                <> siteCtx'
+        let ctx = mconcat
+              [ boolField "page-blog"   (const True)
+              , boolField "home-button" (const True)
+              , constField "tag"         tag
+              , constField "title"       ("Posts for tag: " ++ tag)
+              , constField "posts"       list
+              , constField "description" ("Posts for tag: " ++ tag)
+              , siteCtx'
+              ]
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" ctx
           >>= loadAndApplyTemplate "templates/default.html"    ctx
@@ -74,10 +75,11 @@ main = do
           >>= deIndexURLs
 
     match postsPattern' $ do
-      let ctx =
-            boolField "home-button" (const True)
-              <> boolField "page-blog" (const True)
-              <> siteCtx'
+      let ctx = mconcat
+            [ boolField "home-button" (const True)
+            , boolField "page-blog"   (const True)
+            , siteCtx'
+            ]
       route $ directorizeDate +||+ stripContent +||+ setExtension "html"
       compile $ do
         ident <- getUnderlying
@@ -110,17 +112,16 @@ main = do
         >>= deIndexURLs
 
     create ["archive/index.html"] $ do
-      let ctx =
-            boolField "home-button" (const True)
-              <> boolField "page-archive" (const True)
-              <> siteCtx'
       route idRoute
       compile $ do
-        let archiveCtx =
-              field "posts" (\_ -> postList' recentFirst)
-                <> constField "description" "Blog Archive"
-                <> constField "title"       "Blog Archive"
-                <> ctx
+        let archiveCtx = mconcat
+              [ field "posts" (\_ -> postList' recentFirst)
+              , constField "description" "Blog Archive"
+              , constField "title"       "Blog Archive"
+              , boolField "home-button"  (const True)
+              , boolField "page-archive" (const True)
+              , siteCtx'
+              ]
         makeItem ""
           >>= loadAndApplyTemplate "templates/posts-list.html" archiveCtx
           >>= loadAndApplyTemplate "templates/default.html"    archiveCtx

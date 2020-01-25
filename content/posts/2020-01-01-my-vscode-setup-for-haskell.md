@@ -88,7 +88,7 @@ cd haskell-ide-engine/
 Now, we need to build it using the following commands:
 ```txt
 stack ./install.hs hie-8.6.5
-stack ./install.hs build-data
+stack ./install.hs data
 ```
 
 This may take some time so it may be good time for another coffee :-)

@@ -70,6 +70,16 @@
   }
 }
 
+.blog-post .additional-info {
+  margin-top: $padding-big;
+  padding: $padding-medium $padding-big;
+  border-top: 1px $color-light-2 solid;
+
+  text-align: center;
+  color: $color-light-3;
+  font-size: .9em;
+}
+
 .blog-post.full {
   figure {
     font-size: .8em;
