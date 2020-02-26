@@ -1,11 +1,11 @@
 ---
-title: How to Upload Package to Hackage
-description: todo
-tags: haskell, hackage, stack
+title: Uploading Package to Hackage
+description: Tutorial on how to upload your custom Haskell package to Hackage in few steps, what to be careful about and what are the most common gotchas.
+tags: haskell, hackage, stack, cabal, travis
 tableOfContents: true
 ---
 
-When I started to learn [Haskell][web:haskell] few months ago, I wrote just some small _Hello World_-like programs. Months passed by and I finished the initial version of my very first real world Haskell tool called [Headroom][github:headroom] (more about it in next blog post). Right now it's available on [Github][web:github], but it's more common for Haskell projects to be also available on [Hackage][web:hackage]. Uploading package to Hackage involves several not exactly intuitive steps, so I decide to sum it up in this blog post, as both future reference for myself and help for anyone else who wants to do the same thing.
+After some months I spent learning [Haskell][web:haskell], I finally finished my very first real world Haskell project called [Headroom][github:headroom]. It's basically a manager for license headers located in source code files (more about it in next blog post). When I reached some reasonable stability of the codebase, I decided it would be also nice to have it released on [Hackage][web:hackage]. I found the process not to be as straightforward as I expected, so I decided to sum up my experience in this blog post, both for future myself and for anyone else interested.
 
 <!-- MORE -->
 
@@ -93,6 +93,15 @@ $ cabal haddock --haddock-html-location='https://hackage.haskell.org/package/$pk
 $ cabal upload -d  --publish path/to/package-x.y.z-docs.tar.gz
 ```
 
+If this happens to you, don't forget to check the result of the build that Hackage attempts to do on following address:
+
+```txt
+https://matrix.hackage.haskell.org/package/<YOUR_PACKAGE>
+```
+
+# Summary
+The process of uploading package to Hackage is not difficult, but there are some gotchas that may make it more cumbersome for someone who tries to do that for the very first time. One thing that will be hopefully improved is the workflow of _package candidates_, which is not fully implemented yet, so for example your Haddock documentation won't be generated. Also the process of registering your account on Hackage is relatively slow as it needs some human admin to verify your registration, but I understand this is because of some issues with fake accounts. Hopefully this blog post will help anyone in same situation as I was.
+
 
 [github:headroom]: https://github.com/vaclavsvejcar/headroom
 [github:headroom/.travis.yml]: https://github.com/vaclavsvejcar/headroom/blob/master/.travis.yml
@@ -110,6 +119,3 @@ $ cabal upload -d  --publish path/to/package-x.y.z-docs.tar.gz
 [web:stack/travis]: https://docs.haskellstack.org/en/stable/travis_ci/
 [web:travis]: https://travis-ci.org
 [web:travis/tutorial]: https://docs.travis-ci.com/user/tutorial/
-
-# Summary
-At least for me, the process of uploading package to Hackage was relatively cumbersome, as I found the official documentation relatively stark. Also the fact that the package candidate workflow is not finished isn't really good, because you still cannot preview your Haddock documentation, etc. Hopefully this will improve in near future.
