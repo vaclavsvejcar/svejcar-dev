@@ -17,7 +17,6 @@ module Site.Sitemap
   , sitemapCompiler
   )
 where
-import           Control.Applicative            ( (<$>) )
 import           Data.Char                      ( toLower )
 import           Data.Default.Class
 import           Data.Maybe                     ( catMaybes )

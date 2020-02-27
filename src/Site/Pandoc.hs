@@ -15,6 +15,8 @@ module Site.Pandoc
   )
 where
 
+import           Data.Functor.Identity          ( runIdentity )
+import           Data.Text                      ( Text )
 import           Skylighting.Parser             ( addSyntaxDefinition )
 import           Skylighting.Syntax             ( defaultSyntaxMap )
 import           Skylighting.Types              ( Syntax )
@@ -25,6 +27,9 @@ import           Text.Pandoc.Options            ( WriterOptions
                                                 , writerTableOfContents
                                                 , writerTemplate
                                                 )
+import           Text.Pandoc.Templates          ( Template
+                                                , compileTemplate
+                                                )
 
 
 -- | Adds writer options for custom syntax highlighting.
@@ -34,11 +39,16 @@ withSyntax syntax options =
 
 -- | Adds writer options for Table of Content rendering.
 withTableOfContents :: WriterOptions -> WriterOptions
-withTableOfContents options = options
-  { writerNumberSections  = True
-  , writerTableOfContents = True
-  , writerTOCDepth        = 2
-  , writerTemplate        =
-    Just
-      "\n<div class=\"toc\"><div class=\"header\">Table of Contents</div>\n$toc$\n</div>\n$body$"
-  }
+withTableOfContents options = options { writerNumberSections  = True
+                                      , writerTableOfContents = True
+                                      , writerTOCDepth        = 2
+                                      , writerTemplate        = Just tocTemplate
+                                      }
+
+tocTemplate :: Template Text
+tocTemplate = case runIdentity $ compileTemplate "" tmpl of
+  Left  err      -> error err
+  Right template -> template
+ where
+  tmpl
+    = "\n<div class=\"toc\"><div class=\"header\">Table of Contents</div>\n$toc$\n</div>\n$body$"

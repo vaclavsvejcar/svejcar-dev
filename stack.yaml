@@ -1,9 +1,12 @@
-resolver: lts-14.17
+resolver: lts-15.1
 extra-package-dbs: []
 flags: {}
 packages:
   - "."
 extra-deps:
-  - "hakyll-4.13.0.1"
-  - "hakyll-sass-0.2.4"
-  - "pretty-terminal-0.1.0.0"
+  - hakyll-4.13.1.0
+  - hakyll-sass-0.2.4
+  - hlibsass-0.1.8.1
+  - hsass-0.8.0
+  - pretty-terminal-0.1.0.0
+allow-newer: true
