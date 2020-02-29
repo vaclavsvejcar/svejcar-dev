@@ -5,7 +5,7 @@ tags: haskell, hackage, stack, cabal, travis
 tableOfContents: true
 ---
 
-After some months I spent learning [Haskell][web:haskell], I finally finished my very first real world Haskell project called [Headroom][github:headroom]. It's basically a manager for license headers located in source code files (more about it in next blog post). When I reached some reasonable stability of the codebase, I decided it would be also nice to have it released on [Hackage][web:hackage]. I found the process not to be as straightforward as I expected, so I decided to sum up my experience in this blog post, both for future myself and for anyone else interested.
+After few months I spent learning [Haskell][web:haskell], I finally finished my very first real world Haskell project called [Headroom][github:headroom]. It's basically a manager for license headers located in source code files (more about it in next blog post). When I reached some reasonable stability of the codebase, I decided it would be also nice to have it released on [Hackage][web:hackage]. I found the process not to be as straightforward as I expected, so I decided to sum up my experience in this blog post, both for future myself and for anyone else interested.
 
 <!-- MORE -->
 
@@ -22,13 +22,13 @@ $ cabal check
 Then just go through all the error reports and fix them. This step will make sure that Hackage won't reject your package.
 
 ## Version Bounds
-Every package upload to Hackage should have correctly set _version bounds_ for its dependencies, to avoid troubles during building. If you use [hpack][hackage:hpack] instead of `.cabal` file for your package configuration, then the generated `.cabal` file will miss these version restrictions. However, you can tell Stack to generate these by adding the [pvp-bounds][web:stack/pvp-bounds] option to `stack.yaml`:
+Every package uploaded to Hackage should have set correctly _version bounds_ for its dependencies, to avoid troubles during building using Cabal. If you use [hpack][hackage:hpack] instead of `.cabal` file for your package configuration, then the generated `.cabal` file will miss these version restrictions. However, you can tell Stack to generate tem for you by adding the [pvp-bounds][web:stack/pvp-bounds] option to `stack.yaml`:
 
 ```yaml
 pvp-bounds: both
 ```
 
-Then when you pack the distribution archive using `stack sdist`, the generated `.cabal` file will contain correct version bounds, based on the _Stackage_ version you choose, as seen in snippet below:
+Then when you pack the distribution archive using `stack sdist`, the generated `.cabal` file will contain correct version bounds, based on the _Stackage_ version you choose, as shown in snippet below:
 
 ```yaml
 build-depends:
@@ -41,7 +41,7 @@ build-depends:
 ```
 
 ## Haddock Documentation
-You should document all the public API using the [Haddock][web:haddock] tool, it will help potential users with orientation in your codebase. Also consider adding some example code snippets, you can also make sure they will compile using the awesome [Doctest][hackage:doctest] tool. Example of such Haddock comment with Doctest example is below:
+You should document all the public API using the [Haddock][web:haddock] tool, it will help potential users with orientation in your codebase. Also consider adding some example code snippets and make sure they will compile using the awesome [Doctest][hackage:doctest] tool. Example of such Haddock comment with Doctest example is below:
 
 ```haskell
 -- | Parses 'License' from the raw string representation, formatted as
@@ -61,7 +61,7 @@ As a first step, you need Travis account. Follow [these steps][web:travis/tutori
 # Hackage User Account
 Now you should have your package ready for upload to Hackage. To do that, you need to register user account and ask Hackage trustees to add you to group with upload rights (this seems to be some kind of anti-spam protection).
 
-You can [register new account here][web:hackage/register], shortly after you'll receive e-mail with confirmation link. When you're done with this, you need to send e-mail to Hackage trustees, asking them to add you to uploader group. In my case it took one or two days before I got any answer, so be patient.
+You can [register new account here][web:hackage/register], you'll receive e-mail with confirmation link. When you're done with this, you need to send e-mail to Hackage trustees, asking them to add you to uploader group. In my case it took one or two days before I got any answer, so be patient.
 
 # Upload to Hackage
 Now your project should be ready to be uploaded to Hackage. You can generate distribution tarball by running following command:
@@ -80,7 +80,7 @@ The generated tarball should be available on location similar to this one
 Before you publish your package to the public index, you may want to [upload the package candidate][web:hackage/upload-candidate] first. _Package candidate_ is not released to the main index and contrary to published package, it can be reuploaded as many times as you wish, so you can check that everything is fine and do any necessary fixes. Unfortunately the package candidate workflow is not finished, for example the Haddock documentation is not generated properly.
 
 ## Publishing Package
-Once you are sure that your package is ready to be published, you can do that either using the [upload form][web:hackage/upload] or by executing following command:
+Once you are sure that your package is ready to be published, you can do that by either using the [upload form][web:hackage/upload] or executing following command:
 
 ```txt
 $ cabal upload path/to/package-x.y.z.tar.gz
@@ -100,7 +100,7 @@ https://matrix.hackage.haskell.org/package/<YOUR_PACKAGE>
 ```
 
 # Summary
-The process of uploading package to Hackage is not difficult, but there are some gotchas that may make it more cumbersome for someone who tries to do that for the very first time. One thing that will be hopefully improved is the workflow of _package candidates_, which is not fully implemented yet, so for example your Haddock documentation won't be generated. Also the process of registering your account on Hackage is relatively slow as it needs some human admin to verify your registration, but I understand this is because of some issues with fake accounts. Hopefully this blog post will help anyone in same situation as I was.
+The process of uploading package to Hackage is not difficult, but there are some gotchas that may make it more cumbersome for someone who does that for very first time. One thing that will be hopefully improved is the workflow of _package candidates_, which is not fully implemented yet. Also the process of registering your account on Hackage is relatively slow as it needs some human admin to verify your registration, but I understand this is because of some issues with fake accounts. Hopefully this blog post will help anyone in same situation as I was.
 
 
 [github:headroom]: https://github.com/vaclavsvejcar/headroom
