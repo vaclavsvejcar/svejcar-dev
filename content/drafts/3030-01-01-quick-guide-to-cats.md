@@ -1,11 +1,11 @@
 ---
 title: Quick Guide to Scala Cats
 description: todo
-tags: scala, cats, fp, cheatsheet
+tags: scala, cats, fp, guide
 tableOfContents: true
 ---
 
-[Cats][web:cats] is popular library for functional programming in [Scala][web:scala] and in addition to great official documentation, there is a plethora of articles and blog posts describing this library in depth. I don't really want to repeat myself, so I decided to give this blog post different approach, more like a _cookbook_ style, with set of common problems and how to solve them using Cats. I also won't go in depth in explanations how used _type classes_ and _data types_ from Cats work, but instead I'll put links to official documentation, which definitely will do better job :)
+[Cats][web:cats] is popular library for functional programming in [Scala][web:scala] and in addition to great official documentation, there is a plethora of articles and blog posts describing this library in depth. I don't really want to repeat myself, so I decided to give this blog post different approach, more like a _cookbook_ style, with set of common problems and how to solve them using Cats. I also won't go in depth with explanations how used _type classes_ and _data types_ from Cats work, but instead I'll put links to official documentation, which definitely will do better job :)
 
 <!-- MORE -->
 
@@ -68,6 +68,33 @@ def validateUserName(userName: String): Ior[String, UserName] =
 ## ...have Either that collects errors?
 todo
 
+## ...have type-safe equality check?
+Let's talk about comparing values in Scala. Normally the `==` and `!=` operators are used to compare two values, which desugars to Java's `.equals`, which looks like this:
+
+```java
+public boolean equals(Object obj);
+```
+
+See how the `equals` takes any object as its argument. This unfortunately leads to problem that we can actually compare two different types without getting compiler error:
+
+```scala
+"The answer" == 42 
+// res0: Boolean = false
+```
+
+Fortunately we can use the [Eq][web:cats/Eq] _type class_ (and its handy symbolic operators `===` and `=!=`) from Cats which guarantees on type level that only two values of same type can be compared:
+
+```scala
+"The answer" === 42 
+
+// cmd3.sc:1: type mismatch;
+//  found   : Int(42)
+//  required: String
+// val res3 = "The answer" === 42
+//                             ^
+// Compilation Failed
+```
+
 ## ...have type-safe non-empty list?
 Imagine that you want to define new function `average` that takes list of integers and returns their average value. Naive approach could be this one:
 
@@ -115,6 +142,7 @@ def average(xs: NonEmptyList[Int]): Double = {
 __Fun fact:__ because `NonEmptyList` doesn't allow empty values, unlike the regular `List`, it does have instance of [Semigroup][web:cats/Semigroup] _type class_, but doesn't (and cannot) have instance of [Monoid][web:cats/Monoid].
 
 [web:cats]: https://typelevel.org/cats/
+[web:cats/Eq]: https://typelevel.org/cats/typeclasses/eq.html
 [web:cats/Ior]: https://typelevel.org/cats/datatypes/ior.html
 [web:cats/Monoid]: https://typelevel.org/cats/typeclasses/monoid.html
 [web:cats/NonEmptyList]: https://typelevel.org/cats/datatypes/nel.html
