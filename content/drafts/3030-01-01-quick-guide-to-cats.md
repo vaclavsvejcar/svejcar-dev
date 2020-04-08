@@ -65,8 +65,91 @@ def validateUserName(userName: String): Ior[String, UserName] =
   else                             Ior.right(UserName(userName))
 ```
 
-## ...have Either that collects errors?
-todo
+## ...have Either that accumulates errors?
+Imagine that you have form validation defined like this:
+
+```scala
+sealed trait FormError
+case object UsernameHasSpecialChars     extends FormError
+case object PasswordDoesNotMeetCriteria extends FormError
+
+case class ValidForm(userName: String, password: String)
+
+def validateUserName(userName: String): Either[FormError, String] =
+  Either.cond(
+    userName.matches("^[a-zA-Z0-9]+$"),
+    userName,
+    UsernameHasSpecialChars
+  )
+def validatePassword(password: String): Either[FormError, String] =
+  Either.cond(
+    password.matches("(?=^.{10,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$"),
+    password,
+    PasswordDoesNotMeetCriteria
+  )
+
+def validateForm(rawUserName: String, rawPassword: String): Either[FormError, ValidForm] =
+  for {
+    userName <- validateUserName(rawUserName)
+    password <- validatePassword(rawPassword)
+  } yield ValidForm(userName, password)
+```
+
+It's done in nice functional way, where the function for validating entire form is composed from functions for individual field validations, but it has one major problem - it cannot collect the errors on the `Left` side of `Either`. You'll always get only the very first error and it's really not really user friendly to ask user to corrent incorrect values in form field by field:
+
+```scala
+validateForm("invalidUsername@#$@$~", "invalidPassword")
+// res0: Left(UsernameHasSpecialChars)
+```
+
+So what's going on here? Main problem is the `for-comprehension`, which is just syntactic sugar for `flatMap` calls. Desugared, it would look like this:
+
+```scala
+def validateForm(rawUserName: String, rawPassword: String): Either[FormError, ValidForm] =
+  validateUserName(rawUserName)
+    .flatMap(userName =>
+      validatePassword(rawPassword)
+        .map(password => ValidForm(userName, password))
+    )
+
+```
+
+And `flatMap` itself is method of the [Monad][web:cats/Monad] _type class_. Problem with _Monad_ and `flatMap` is that it represents sequential (dependent) operation, where current computation can be done only if the result of previous one is available:
+
+```scala
+def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
+```
+
+In case of the form validation demo, if the first validation returns `Left` with error, the _for-comprehension_ short-circuits, because there's no `Right` value to continue with.
+
+Instead, we want to use the [Validated][web:cats/Validated] data type and compose them using the [Applicative][web:cats/Applicative], which can represent independent operations (and that validation of individual form field is):
+
+```scala
+import cats.data.ValidatedNec
+import cats.implicits._
+
+type ValidationResult[A] = ValidatedNec[FormError, A]
+
+def validateUserName(userName: String): ValidationResult[String] =
+  if (userName.matches("^[a-zA-Z0-9]+$")) userName.validNec
+  else UsernameHasSpecialChars.invalidNec
+
+def validatePassword(password: String): ValidationResult[String] =
+  if (password.matches("(?=^.{10,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$")) password.validNec
+  else PasswordDoesNotMeetCriteria.invalidNec
+
+def validateForm(userName: String, password: String): ValidationResult[ValidForm] =
+  (validateUserName(userName), validatePassword(password)).mapN(ValidForm)
+```
+
+Now we can collect all validation errors as shown below:
+
+```scala
+validateForm("invalidUsername@#$@$~", "invalidPassword")
+// res0: Invalid(Chain(UsernameHasSpecialChars, PasswordDoesNotMeetCriteria))
+```
+
+Check the official documentation for more details, and also don't forget to check the [NonEmptyChain][web:cats/NonEmptyChain] data type, which is used here to represent non-empty collection of errors (`ValidatedNel[A]` is just type alias for `Validated[NonEmptyChain[DomainValidation], A]`).
 
 ## ...have type-safe equality check?
 Let's talk about comparing values in Scala. Normally the `==` and `!=` operators are used to compare two values, which desugars to Java's `.equals`, which looks like this:
@@ -75,7 +158,7 @@ Let's talk about comparing values in Scala. Normally the `==` and `!=` operators
 public boolean equals(Object obj);
 ```
 
-See how the `equals` takes any object as its argument. This unfortunately leads to problem that we can actually compare two different types without getting compiler error:
+See how the `equals` takes any object as its argument? This unfortunately leads to problem that we can actually compare two different types without getting compiler error:
 
 ```scala
 "The answer" == 42 
@@ -142,12 +225,16 @@ def average(xs: NonEmptyList[Int]): Double = {
 __Fun fact:__ because `NonEmptyList` doesn't allow empty values, unlike the regular `List`, it does have instance of [Semigroup][web:cats/Semigroup] _type class_, but doesn't (and cannot) have instance of [Monoid][web:cats/Monoid].
 
 [web:cats]: https://typelevel.org/cats/
+[web:cats/Applicative]: https://typelevel.org/cats/typeclasses/applicative.html
 [web:cats/Eq]: https://typelevel.org/cats/typeclasses/eq.html
 [web:cats/Ior]: https://typelevel.org/cats/datatypes/ior.html
+[web:cats/Monad]: https://typelevel.org/cats/typeclasses/monad.html
 [web:cats/Monoid]: https://typelevel.org/cats/typeclasses/monoid.html
 [web:cats/NonEmptyList]: https://typelevel.org/cats/datatypes/nel.html
+[web:cats/NonEmptyChain]:https://typelevel.org/cats/datatypes/chain.html#nonemptychain
 [web:cats/OptionT]: https://typelevel.org/cats/datatypes/optiont.html
 [web:cats/Semigroup]: https://typelevel.org/cats/typeclasses/semigroup.html
+[web:cats/Validated]: https://typelevel.org/cats/datatypes/validated.html
 [web:monad-transformer]: https://blog.buildo.io/monad-transformers-for-the-working-programmer-aa7e981190e7
 [web:scala]: https://www.scala-lang.org/
 [scaladoc:Either]: https://www.scala-lang.org/api/current/scala/util/Either.html
