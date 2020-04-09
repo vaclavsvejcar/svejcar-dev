@@ -11,6 +11,46 @@ tableOfContents: true
 
 # How to...
 
+## ...correctly use imports from Cats?
+In short, the easiest way is just to import everything that's commonly needed:
+
+```scala
+import cats._
+import cats.data._
+import cats.implicits._
+```
+
+But if you want to know more about how Cat's imports are organized, don't forget to check [Cats FAQ][web:cats/faq#imports] and [Imports Guide][web:cats/imports]. Basically, Cat's imports are organized into few basic packages:
+
+- __cats.___ - this package contains common [type classes][web:cats/typeclasses], such as [Applicative][web:cats/Applicative], [Monoid][web:cats/Monoid] or [Semigroup][web:cats/Semigroup]. You can import the entire package (`import cats._`), or use individual imports, such as `import cats.Semigroup`.
+- __cats.data.___ - this one contains [data types][web:cats/datatypes], such as [Ior][web:cats/Ior], [Validated][web:cats/Validated] or [NonEmptyList][web:cats/NonEmptyList].
+- __cats.instances.x.___ - contains instances of _type classes_ for specified type, such as `import cats.instances.option._`.
+- __cats.syntax.x.___ - contains extension methods for selected data type, so you can use for example `12.some` instead of `Some(12)`, if you put the `import cats.syntax.option._` in your code.
+
+And then there is the __cats.implicits.___, which basically imports all _type classes_, instances and syntax you need.
+
+So should you import just the stuff you need instead of importing everything? Well, while it might improve things such as compilation time, I don't really recommend that unless you really know what you're doing, because __mixing incorrect imports__ together will __lead to pretty confusing compiler errors__, like this one:
+
+```scala
+import cats.implicits._
+import cats.instances.option._
+
+42.pure[Option]
+//Error: Could not find an instance of Applicative for Option
+//  42.pure[Option]
+```
+
+Guess what's wrong here? Actually both `cats.implicits` and `cats.instances.option` both extends from `cats.instances.OptionInstances`, which confuses compiler. To make this work, you'd have to import syntax for _Applicative_ (`cats.syntax.applicative._`) - that's the `.pure` method, and also instance of _Applicative_ for `Option` - `cats.instances.option._`:
+
+```scala
+import cats.instances.option._
+import cats.syntax.applicative._
+
+42.pure[Option]
+```
+
+As you already guess, this might become trickier on larger project, so my recommendation - always use that three imports from the beginning to keep both compiler and your co-workers happy.
+
 ## ...compose two Future[Option[T]] values?
 You can use a [monad transformer][web:monad-transformer] called [OptionT][web:cats/OptionT]. Let's say you have following code with two methods, both returning `Future[Option[T]]` and you want to compose them. Naively putting them into _for-comprehension_ won't work:
 
@@ -225,6 +265,10 @@ def average(xs: NonEmptyList[Int]): Double = {
 __Fun fact:__ because `NonEmptyList` doesn't allow empty values, unlike the regular `List`, it does have instance of [Semigroup][web:cats/Semigroup] _type class_, but doesn't (and cannot) have instance of [Monoid][web:cats/Monoid].
 
 [web:cats]: https://typelevel.org/cats/
+[web:cats/datatypes]: https://typelevel.org/cats/datatypes.html
+[web:cats/faq#imports]: https://typelevel.org/cats/faq.html#what-imports
+[web:cats/imports]: https://typelevel.org/cats/typeclasses/imports.html
+[web:cats/typeclasses]: https://typelevel.org/cats/typeclasses.html
 [web:cats/Applicative]: https://typelevel.org/cats/typeclasses/applicative.html
 [web:cats/Eq]: https://typelevel.org/cats/typeclasses/eq.html
 [web:cats/Ior]: https://typelevel.org/cats/datatypes/ior.html
