@@ -20,7 +20,7 @@ import cats.data._
 import cats.implicits._
 ```
 
-But if you want to know more about how Cat's imports are organized, don't forget to check [Cats FAQ][web:cats/faq#imports] and [Imports Guide][web:cats/imports]. Basically, Cat's imports are organized into few basic packages:
+But if you want to know more about how Cats' imports are organized, don't forget to check [Cats FAQ][web:cats/faq#imports] and [Imports Guide][web:cats/imports]. Basically, Cats' imports are organized into few basic packages:
 
 - __cats.___ - this package contains common [type classes][web:cats/typeclasses], such as [Applicative][web:cats/Applicative], [Monoid][web:cats/Monoid] or [Semigroup][web:cats/Semigroup]. You can import the entire package (`import cats._`), or use individual imports, such as `import cats.Semigroup`.
 - __cats.data.___ - this one contains [data types][web:cats/datatypes], such as [Ior][web:cats/Ior], [Validated][web:cats/Validated] or [NonEmptyList][web:cats/NonEmptyList].
@@ -263,6 +263,31 @@ def average(xs: NonEmptyList[Int]): Double = {
 ```
 
 __Fun fact:__ because `NonEmptyList` doesn't allow empty values, unlike the regular `List`, it does have instance of [Semigroup][web:cats/Semigroup] _type class_, but doesn't (and cannot) have instance of [Monoid][web:cats/Monoid].
+
+## ...use Cats' extension methods?
+This is one of the most basic features, but _Cats_ provides extension methods for most used _data types_ for constructing their values.
+
+__Option__
+```scala
+import cats.implicits._
+
+42.some
+// res0: Option[Int] = Some(42)
+
+none[Int]
+// res1: Option[Int] = None
+```
+
+__Either__
+```scala
+import cats.implicits._
+
+"The Answer".asRight[Int]
+// res0: Either[Int, String] = Right("The Answer")
+
+42.asLeft[String]
+// res1: Either[Int, String] = Left(42)
+```
 
 [web:cats]: https://typelevel.org/cats/
 [web:cats/datatypes]: https://typelevel.org/cats/datatypes.html
