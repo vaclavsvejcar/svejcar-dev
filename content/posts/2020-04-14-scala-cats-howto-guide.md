@@ -1,11 +1,11 @@
 ---
-title: Quick Guide to Scala Cats
-description: todo
+title: Scala Cats How-To Guide
+description: Guide to Cats, popular functional programming library for Scala in more how-to approach (problem -> solution).
 tags: scala, cats, fp, guide
 tableOfContents: true
 ---
 
-[Cats][web:cats] is popular library for functional programming in [Scala][web:scala] and in addition to great official documentation, there is a plethora of articles and blog posts describing this library in depth. I don't really want to repeat myself, so I decided to give this blog post different approach, more like a _cookbook_ style, with set of common problems and how to solve them using Cats. I also won't go in depth with explanations how used _type classes_ and _data types_ from Cats work, but instead I'll put links to official documentation, which definitely will do better job :)
+[Cats][web:cats] is popular library for functional programming in [Scala][web:scala] and in addition to great official documentation, there is a plethora of articles and blog posts describing this library in depth. I don't really want to repeat myself, so I decided to give this blog post different approach, more like a _how-to_ style, with set of common problems and how to solve them using Cats. I also won't go in depth with explanations how used _type classes_ and _data types_ from Cats work, but instead I'll put links to official documentation, which definitely will do better job :) I'll also update this blog post in future if I'll find next topics to add.
 
 <!-- MORE -->
 
@@ -285,9 +285,55 @@ import cats.implicits._
 "The Answer".asRight[Int]
 // res0: Either[Int, String] = Right("The Answer")
 
-42.asLeft[String]
-// res1: Either[Int, String] = Left(42)
+41.asLeft[String]
+// res1: Either[Int, String] = Left(41)
 ```
+
+__Validated__
+```scala
+import cats.implicits._
+
+"The Answer".valid[Int]
+// res0: Validated[Int, String] = Valid("The Answer")
+
+"The Answer".validNec[Int]
+// res1: ValidatedNec[Int, String] = Valid("The Answer")
+
+41.invalid[String]
+// res2: Validated[Int, String] = Invalid(41)
+
+41.invalidNel[String]
+// res3: ValidatedNel[Int, String] = Invalid(NonEmptyList(41, List()))
+```
+
+## ...work with mapN and tuples
+Cats provides very useful function when working with tuples called `mapN`, which is also a replacement for the _scream operator_ - `|@|`.
+
+For example, it allows to map function over the tuple of options values like this:
+```scala
+import cats.implicits._ 
+
+("The Answer".some, none[String]).mapN(_ + ": " + _)
+// res0: Option[String] = None
+
+("The Answer".some, "42".some).mapN(_ + ": " + _)
+// res1: Option[String] = Some("The Answer: 42")
+```
+
+Very interesting use is also for construction _case class_ instances from possibly empty values. It might look strange, but makes sense as `mapN` calls the `User.apply` function, which takes two parameters (`name`, `surname`) and returns the class instance.
+```scala
+import cats.implicits._ 
+
+case class User(name: String, surname: String) 
+
+("John".some, none[String]).mapN(User) 
+// res0: Option[User] = None
+
+("John".some, "Smith".some).mapN(User) 
+// res1: Option[User] = Some(User("John", "Smith"))
+```
+
+
 
 [web:cats]: https://typelevel.org/cats/
 [web:cats/datatypes]: https://typelevel.org/cats/datatypes.html
