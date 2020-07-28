@@ -29,20 +29,22 @@ tagLinks extractTags key tags = field key $ \item -> do
  where
   renderLink tag tagRoute = pathToUrl <$> tagRoute
    where
-    pathToUrl path = H.li $ H.a ! A.href (toValue . toUrl $ path) $ toHtml tag
+    pathToUrl path =
+      H.li . (H.a ! A.href (toValue . toUrl $ path)) $ toHtml tag
 
 tagCloud :: Double -> Double -> Tags -> Compiler String
 tagCloud = renderTagCloudWith makeLink joinLinks
  where
-  joinLinks = renderHtml . H.ul . mconcat . map (H.li . preEscapedToHtml)
+  joinLinks = renderHtml . H.ul . mconcat . fmap (H.li . preEscapedToHtml)
   makeLink minSize maxSize tag url count min' max' =
     let diff     = 1 + fromIntegral max' - fromIntegral min'
         relative = (fromIntegral count - fromIntegral min') / diff
         size     = floor $ minSize + relative * (maxSize - minSize) :: Int
     in  renderHtml
-          $ H.a
-          ! A.style (toValue $ "font-size: " ++ show size ++ "%")
-          ! A.href (toValue url)
+          . ( H.a
+            ! A.style (toValue $ "font-size: " <> show size <> "%")
+            ! A.href (toValue url)
+            )
           $ toHtml tag
 
 tagCloudField :: String -> Double -> Double -> Tags -> Context String

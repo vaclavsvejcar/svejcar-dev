@@ -19,13 +19,13 @@ $ stack build
 
 ### 3/ Preview draft version
 ```bash
-$ stack exec site rebuild draft
-$ stack exec site watch draft
+$ stack run rebuild draft
+$ stack run watch draft
 ```
 Website should now run on https://localhost:8000
 
 ### 4/ Build production site
 ```bash
-$ stack exec site rebuild
+$ stack run rebuild
 ```
 Generated content is located in `_site/` directory.

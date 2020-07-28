@@ -48,7 +48,7 @@ cleanDrafts = do
   remove "_draft_cache"
  where
   remove dir = do
-    putStrLn $ "Removing " ++ dir ++ "..."
+    putStrLn $ "Removing " <> dir <> "..."
     removeDirectory dir
 
 deIndexURLs :: Item String -> Compiler (Item String)
@@ -57,22 +57,21 @@ deIndexURLs item = return $ fmap (withUrls stripIndex) item
 directorizeDate :: Routes
 directorizeDate = customRoute (directorize . toFilePath)
  where
-  directorize path = dirs ++ "/index" ++ ext
+  directorize path = dirs <> "/index" <> ext
    where
     (dirs, ext) =
       splitExtension
-        $  concat
+        .  concat
         $  intersperse "/" date
-        ++ ["/"]
-        ++ intersperse "-" rest
+        <> ["/"]
+        <> intersperse "-" rest
     (date, rest) = splitAt 3 $ splitOn "-" path
 
-postList
-  :: Pattern
-  -> SiteConfig
-  -> Tags
-  -> ([Item String] -> Compiler [Item String])
-  -> Compiler String
+postList :: Pattern
+         -> SiteConfig
+         -> Tags
+         -> ([Item String] -> Compiler [Item String])
+         -> Compiler String
 postList postsPattern' config tags sortFilter = do
   posts   <- sortFilter =<< loadAll postsPattern'
   itemTpl <- loadBody "templates/post-link.html"
@@ -117,9 +116,8 @@ stripStatic = stripRoute "static/"
 
 -- | Strips "index.html" from given URL string.
 stripIndex :: String -> String
-stripIndex url = if "index.html" `isSuffixOf` url -- && elem (head url) ("/." :: String)
-  then take (length url - 10) url
-  else url
+stripIndex url =
+  if "index.html" `isSuffixOf` url then take (length url - 10) url else url
 
 -- | Infix version of 'composeRoutes'.
 (+||+) :: Routes -> Routes -> Routes

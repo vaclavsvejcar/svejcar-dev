@@ -56,7 +56,7 @@ instance Default SitemapConfiguration where
 type SitemapRecord = (FilePath, String)
 
 showFreq :: ChangeFrequency -> String
-showFreq = map toLower . show
+showFreq = fmap toLower . show
 
 sitemapCompiler :: SitemapConfiguration -> Compiler (Item String)
 sitemapCompiler config = do
@@ -92,12 +92,12 @@ elementString name content = Element
 element :: String -> [Element] -> Element
 element name content = Element { elName    = unqual name
                                , elAttribs = []
-                               , elContent = map Elem content
+                               , elContent = fmap Elem content
                                , elLine    = Nothing
                                }
 
 xmlUrlSet :: SitemapConfiguration -> [SitemapRecord] -> Element
-xmlUrlSet config = add_attr xmlns . element "urlset" . map (xmlUrl config)
+xmlUrlSet config = add_attr xmlns . element "urlset" . fmap (xmlUrl config)
  where
   xmlns = Attr (unqual "xmlns") "http://www.sitemaps.org/schemas/sitemap/0.9"
 
@@ -105,12 +105,13 @@ xmlUrl :: SitemapConfiguration -> SitemapRecord -> Element
 xmlUrl conf r = element "url" [ f conf r | f <- sub ]
   where sub = [xmlLoc, xmlLastMod, xmlChangeFreq, xmlPriority]
 
-xmlLoc, xmlLastMod, xmlChangeFreq, xmlPriority
-  :: SitemapConfiguration -> SitemapRecord -> Element
+xmlLoc, xmlLastMod, xmlChangeFreq, xmlPriority :: SitemapConfiguration
+                                               -> SitemapRecord
+                                               -> Element
 xmlLastMod _ (_, m) = elementString "lastmod" m
 xmlLoc config (r, _) = elementString "loc" loc
  where
-  loc = sitemapBase config ++ drop 1 rew
+  loc = sitemapBase config <> drop 1 rew
   rew = sitemapRewriter config r
 xmlChangeFreq config (r, _) = elementString "changefreq" freq
   where freq = showFreq $ sitemapChangeFreq config r

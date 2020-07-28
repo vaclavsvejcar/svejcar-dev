@@ -50,9 +50,9 @@ main = do
               [ boolField "page-blog"   (const True)
               , boolField "home-button" (const True)
               , constField "tag"         tag
-              , constField "title"       ("Posts for tag: " ++ tag)
+              , constField "title"       ("Posts for tag: " <> tag)
               , constField "posts"       list
-              , constField "description" ("Posts for tag: " ++ tag)
+              , constField "description" ("Posts for tag: " <> tag)
               , siteCtx'
               ]
         makeItem ""
@@ -136,7 +136,7 @@ main = do
 
     scssDependency <- makePatternDependency "assets/css/**.scss"
     rulesExtraDependencies [scssDependency]
-      $ match "assets/css/screen.scss"
+      . match "assets/css/screen.scss"
       $ do
           route $ setExtension "css"
           compile (fmap compressCss <$> sassCompiler)

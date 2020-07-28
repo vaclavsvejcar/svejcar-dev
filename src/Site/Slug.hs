@@ -12,7 +12,7 @@ import qualified Data.Text                     as T
 slugify :: Text -> Text
 slugify = T.intercalate (T.singleton '-') . T.words . T.toLower . clean
 
-clean :: T.Text -> T.Text
+clean :: Text -> Text
 clean = T.map keepAlphaNum . T.replace "'" "" . T.replace "&" "and"
 
 keepAlphaNum :: Char -> Char
