@@ -3,7 +3,7 @@
 This is the source code for my personal website https://svejcar.dev. It's built using [Hakyll](https://jaspervdj.be/hakyll/) static site generator, [Haskell](https://www.haskell.org)-based alternative to [Jekyll](https://jekyllrb.com).
 
 ## License
-Blog source code (located in `src/` directory) is licensed under the [BSD-3-Clause license][BSD-3-Clause]. The content of the blog (blog posts, images, etc., located in `content/` and `assets/` directories) is licensed under the [CC BY-ND 4.0].
+Blog source code (located in `src/` directory) is licensed under the [BSD-3-Clause license][BSD-3-Clause]. The content of the blog (blog posts, images, etc., located in `content/`, `assets/` and `static/` directories) is licensed under the [CC BY-ND 4.0].
 
 ## How to build
 

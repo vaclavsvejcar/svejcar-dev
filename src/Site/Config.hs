@@ -25,5 +25,6 @@ data SiteConfig = SiteConfig
   , scSiteRoot :: String       -- ^ Root URL of the site
   }
 
+
 instance Default SiteConfig where
   def = SiteConfig { scGaId = Nothing, scSiteRoot = "https://example.com" }

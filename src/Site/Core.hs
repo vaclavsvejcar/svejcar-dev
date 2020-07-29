@@ -55,8 +55,10 @@ cleanDrafts = do
     putStrLn $ "Removing " <> dir <> "..."
     removeDirectory dir
 
+
 deIndexURLs :: Item String -> Compiler (Item String)
 deIndexURLs item = return $ fmap (withUrls stripIndex) item
+
 
 directorizeDate :: Routes
 directorizeDate = customRoute (directorize . toFilePath)
@@ -71,6 +73,7 @@ directorizeDate = customRoute (directorize . toFilePath)
         <> intersperse "-" rest
     (date, rest) = splitAt 3 $ splitOn "-" path
 
+
 postList :: Pattern
          -> SiteConfig
          -> Tags
@@ -81,12 +84,15 @@ postList postsPattern' config tags sortFilter = do
   itemTpl <- loadBody "templates/post-link.html"
   applyTemplateList itemTpl (postCtx config tags) posts
 
+
 dropMore :: Item String -> Item String
 dropMore = fmap (unlines . takeWhile (/= "<!-- MORE -->") . lines)
+
 
 postsPattern :: RenderMode -> Pattern
 postsPattern Draft = "content/posts/*.md" .||. "content/drafts/*.md"
 postsPattern Prod  = "content/posts/*.md"
+
 
 runSite :: (RenderMode -> Rules ()) -> IO ()
 runSite rules = do
@@ -109,19 +115,24 @@ runSite rules = do
   when draftMode $ putStrLn (color Yellow "🚧 RUNNING IN DRAFT MODE 🚧")
   withArgs args' $ hakyllWith hakyllConf (rules mode)
 
+
 stripContent :: Routes
 stripContent = stripRoute "content/"
+
 
 stripRoute :: String -> Routes
 stripRoute ptrn = gsubRoute ptrn $ const ""
 
+
 stripStatic :: Routes
 stripStatic = stripRoute "static/"
+
 
 -- | Strips "index.html" from given URL string.
 stripIndex :: String -> String
 stripIndex url =
   if "index.html" `isSuffixOf` url then take (length url - 10) url else url
+
 
 -- | Infix version of 'composeRoutes'.
 (+||+) :: Routes -> Routes -> Routes

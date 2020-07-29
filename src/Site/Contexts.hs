@@ -34,6 +34,7 @@ postCtx config tags = mconcat
   , siteCtx config tags
   ]
 
+
 -- | Creates a 'Context' for main template.
 siteCtx :: SiteConfig -> Tags -> Context String
 siteCtx config tags = mconcat
@@ -43,8 +44,10 @@ siteCtx config tags = mconcat
   , defaultContext
   ]
 
+
 maybeField :: String -> Maybe String -> Context a
 maybeField key = maybe mempty (constField key)
+
 
 pageIdField :: String -> Context a
 pageIdField = mapContext (T.unpack . slugify . T.pack) . titleField

@@ -20,6 +20,7 @@ where
 
 import           Data.Functor.Identity          ( runIdentity )
 import           Data.Text                      ( Text )
+import qualified Data.Text                     as T
 import           Skylighting.Parser             ( addSyntaxDefinition )
 import           Skylighting.Syntax             ( defaultSyntaxMap )
 import           Skylighting.Types              ( Syntax )
@@ -40,6 +41,7 @@ withSyntax :: Syntax -> WriterOptions -> WriterOptions
 withSyntax syntax options =
   options { writerSyntaxMap = addSyntaxDefinition syntax defaultSyntaxMap }
 
+
 -- | Adds writer options for Table of Content rendering.
 withTableOfContents :: WriterOptions -> WriterOptions
 withTableOfContents options = options { writerNumberSections  = True
@@ -48,10 +50,17 @@ withTableOfContents options = options { writerNumberSections  = True
                                       , writerTemplate        = Just tocTemplate
                                       }
 
+
 tocTemplate :: Template Text
 tocTemplate = case runIdentity $ compileTemplate "" tmpl of
   Left  err      -> error err
   Right template -> template
  where
-  tmpl
-    = "\n<div class=\"toc\"><div class=\"header\">Table of Contents</div>\n$toc$\n</div>\n$body$"
+  tmpl = T.intercalate
+    "\n"
+    [ ""
+    , "<div class=\"toc\"><div class=\"header\">Table of Contents</div>"
+    , "$toc$"
+    , "</div>"
+    , "$body$"
+    ]

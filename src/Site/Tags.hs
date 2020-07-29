@@ -46,6 +46,7 @@ tagLinks extractTags key tags = field key $ \item -> do
     pathToUrl path =
       H.li . (H.a ! A.href (toValue . toUrl $ path)) $ toHtml tag
 
+
 tagCloud :: Double -> Double -> Tags -> Compiler String
 tagCloud = renderTagCloudWith makeLink joinLinks
  where
@@ -60,6 +61,7 @@ tagCloud = renderTagCloudWith makeLink joinLinks
             ! A.href (toValue url)
             )
           $ toHtml tag
+
 
 tagCloudField :: String -> Double -> Double -> Tags -> Context String
 tagCloudField key minSize maxSize tags =
