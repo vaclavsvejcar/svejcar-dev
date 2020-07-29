@@ -1,14 +1,17 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 {-|
 Module      : Site.Core
 Description : Core functionality for the site.
-Copyright   : (c) 2019 Vaclav Svejcar
-
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
 Stability   : experimental
-Portability : portable
+Portability : POSIX
 
 Module providing functions required to properly configure Hakyll for this site.
 -}
-{-# LANGUAGE OverloadedStrings #-}
+
 module Site.Core
   ( deIndexURLs
   , directorizeDate
@@ -40,6 +43,7 @@ import           System.Environment             ( getArgs
                                                 , withArgs
                                                 )
 import           System.FilePath                ( splitExtension )
+
 
 -- | Cleans up generated files used for Draft mode.
 cleanDrafts :: IO ()

@@ -1,13 +1,15 @@
 {-|
 Module      : Site.Compilers
 Description : Extra compilers for Hakyll
-Copyright   : (c) 2019 Vaclav Svejcar
-
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
 Stability   : experimental
-Portability : portable
+Portability : POSIX
 
 Module providing extra compilers for Hakyll.
 -}
+
 module Site.Compilers
   ( compressJsCompiler
   , sassCompiler

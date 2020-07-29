@@ -1,4 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+
+{-|
+Module      : Site.Slug
+Description : URL slug generator
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Logic for generating /slugs/ for given URL.
+-}
+
 module Site.Slug
   ( slugify
   )

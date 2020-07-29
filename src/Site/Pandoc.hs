@@ -1,14 +1,17 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 {-|
 Module      : Site.Pandoc
 Description : Pandoc related functions specific for the site.
-Copyright   : (c) 2019 Vaclav Svejcar
-
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
 Stability   : experimental
-Portability : portable
+Portability : POSIX
 
 Module providing Pandoc related functions and data types for the site.
 -}
-{-# LANGUAGE OverloadedStrings #-}
+
 module Site.Pandoc
   ( withSyntax
   , withTableOfContents

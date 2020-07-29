@@ -14,10 +14,11 @@ ghc-options:
   - -Wincomplete-record-updates
   - -Wincomplete-uni-patterns
   - -Wredundant-constraints
+  - -O2
 
 executables:
   site:
-    main: Site.hs
+    main: Main.hs
     source-dirs: src
     ghc-options:
       - -threaded

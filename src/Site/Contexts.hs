@@ -1,13 +1,15 @@
 {-|
 Module      : Site.Contexts
 Description : Collection of common Hakyll contexts.
-Copyright   : (c) 2019 Vaclav Svejcar
-
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
 Stability   : experimental
-Portability : portable
+Portability : POSIX
 
 Module providing functions for constructing Hakyll contexts.
 -}
+
 module Site.Contexts
   ( postCtx
   , siteCtx
@@ -21,6 +23,7 @@ import           Site.Slug                      ( slugify )
 import           Site.Tags                      ( tagCloudField
                                                 , tagLinks
                                                 )
+
 
 -- | Creates a 'Context' for blog posts.
 postCtx :: SiteConfig -> Tags -> Context String

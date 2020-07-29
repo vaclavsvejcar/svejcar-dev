@@ -1,4 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+
+{-|
+Module      : Site.Tags
+Description : Processing of blog post tags
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Logic for generating and processing blog post tags.
+-}
+
 module Site.Tags
   ( tagLinks
   , tagCloud
@@ -19,6 +32,7 @@ import           Text.Blaze.Html.Renderer.String
                                                 ( renderHtml )
 import qualified Text.Blaze.Html5              as H
 import qualified Text.Blaze.Html5.Attributes   as A
+
 
 tagLinks :: (Identifier -> Compiler [String]) -> String -> Tags -> Context a
 tagLinks extractTags key tags = field key $ \item -> do

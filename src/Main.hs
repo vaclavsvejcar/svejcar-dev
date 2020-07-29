@@ -1,4 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
+
+{-|
+Module      : Main
+Description : Main logic for /Hakyll/
+Copyright   : (c) 2019-2020 Vaclav Svejcar
+License     : BSD-3-Clause
+Maintainer  : vaclav.svejcar@gmail.com
+Stability   : experimental
+Portability : POSIX
+
+Module containing blog configuration for /Hakyll/.
+-}
+
+module Main where
+
 import           Control.Monad                  ( filterM
                                                 , (>=>)
                                                 )
@@ -16,12 +31,14 @@ import           Site.Sitemap
 import           Site.Types                     ( RenderMode(..) )
 import           Skylighting.Parser             ( parseSyntaxDefinition )
 
+
 siteConfig :: RenderMode -> SiteConfig
 siteConfig mode = def { scGaId = gaId, scSiteRoot = "https://svejcar.dev/" }
  where
   gaId = case mode of
     Draft -> Nothing
     Prod  -> Just "UA-148507120-1"
+
 
 main :: IO ()
 main = do
@@ -44,8 +61,11 @@ main = do
     tagsRules tags $ \tag _ -> do
       route idRoute
       compile $ do
-        list <- postList'
-          (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
+        list <-
+          postList'
+            (   recentFirst
+            >=> filterM (fmap (elem tag) . getTags . itemIdentifier)
+            )
         let ctx = mconcat
               [ boolField "page-blog"   (const True)
               , boolField "home-button" (const True)
