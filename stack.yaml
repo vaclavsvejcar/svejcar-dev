@@ -1,4 +1,4 @@
-resolver: lts-16.7
+resolver: lts-16.8
 
 extra-package-dbs: []
 
