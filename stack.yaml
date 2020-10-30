@@ -1,4 +1,4 @@
-resolver: lts-16.19
+resolver: lts-16.20
 
 extra-package-dbs: []
 
@@ -9,7 +9,7 @@ packages:
 
 extra-deps:
   - hakyll-sass-0.2.4
-  - hlibsass-0.1.8.1
+  - hlibsass-0.1.10.1
   - hsass-0.8.0
 
 allow-newer: true
