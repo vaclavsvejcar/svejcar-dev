@@ -61,8 +61,11 @@ main = do
     tagsRules tags $ \tag _ -> do
       route idRoute
       compile $ do
-        list <- postList'
-          (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
+        list <-
+          postList'
+            (   recentFirst
+            >=> filterM (fmap (elem tag) . getTags . itemIdentifier)
+            )
         let ctx = mconcat
               [ boolField "page-blog"   (const True)
               , boolField "home-button" (const True)
