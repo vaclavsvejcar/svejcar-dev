@@ -1,5 +1,5 @@
 .PHONY: build
-build: format
+build: hlint headroom pretty
 	stack build
 	stack haddock
 
@@ -8,10 +8,18 @@ clean:
 	rm -rf ./.stack-work/
 	rm -rf ./dist-newstyle
 
-.PHONY: format
-format: 
+.PHONY: pretty
+pretty: 
 	find ./src -name '*.hs' | xargs stylish-haskell -i -v
 	find ./src -name '*.hs' | xargs brittany --write-mode=inplace
 
 .PHONY: fresh
 fresh: clean build
+
+.PHONY: headroom
+headroom:
+	headroom run -c
+
+.PHONY: hlint
+hlint:
+	hlint ./src

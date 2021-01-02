@@ -3,7 +3,7 @@
 {-|
 Module      : Main
 Description : Main logic for /Hakyll/
-Copyright   : (c) 2019-2020 Vaclav Svejcar
+Copyright   : (c) 2019-2021 Vaclav Svejcar
 License     : BSD-3-Clause
 Maintainer  : vaclav.svejcar@gmail.com
 Stability   : experimental
@@ -61,11 +61,8 @@ main = do
     tagsRules tags $ \tag _ -> do
       route idRoute
       compile $ do
-        list <-
-          postList'
-            (   recentFirst
-            >=> filterM (fmap (elem tag) . getTags . itemIdentifier)
-            )
+        list <- postList'
+          (recentFirst >=> filterM (fmap (elem tag) . getTags . itemIdentifier))
         let ctx = mconcat
               [ boolField "page-blog"   (const True)
               , boolField "home-button" (const True)

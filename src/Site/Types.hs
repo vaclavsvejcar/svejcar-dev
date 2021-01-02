@@ -1,7 +1,7 @@
 {-|
 Module      : Site.Types
 Description : Provides additional info about build.
-Copyright   : (c) 2019-2020 Vaclav Svejcar
+Copyright   : (c) 2019-2021 Vaclav Svejcar
 License     : BSD-3-Clause
 Maintainer  : vaclav.svejcar@gmail.com
 Stability   : experimental

@@ -1,0 +1,4 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "svejcar-dev:exe:site"

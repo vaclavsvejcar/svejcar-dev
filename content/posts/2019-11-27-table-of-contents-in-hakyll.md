@@ -5,9 +5,9 @@ tags: hakyll, haskell, meta, pandoc
 tableOfContents: true
 ---
 
-After several attempts to run and actually maintain some personal blog, I finally settled down on this one based on [Hakyll][web:hakyll]. Main reason was that I decided to learn [Haskell][web:haskell] and the best way for me how to learn new technology is to use it for some real world application. After publishing several blog posts I realized that some of them are pretty long with many headings and having some kind of _table of contents_ would definitely help to navigate them.
+It took me several attemps to run and actually maintain some kind of personal blog, so I'm happy I finally settled down on this one, based on [Hakyll][web:hakyll]. Main reason why _Hakyll_ was that I wanted to learn [Haskell][web:haskell] and best way for me to learn something new is to apply it for some real world use case. After publishing first few blog posts I realized that some are pretty long with many headings and having _table of contents_ would definitely be helpful for readers.
 
-I spent some time by searching optimal solution and found that [Pandoc][web:pandoc], library used by _Hakyll_ to convert _Markdown_ to _HTML_, already contains pretty decent built-in support for this. In this blog post, I'll demonstrate how to implement simple _table of contents_ for blog posts, that can be easily customized to your specific needs.
+So I spent some time searching best solution and found that [Pandoc][web:pandoc] (library used by _Hakyll_ to convert _Markdown_ to _HTML_) already contains built-in support for this. In this blog post, I'll show how to implement simple _table of contents_ for blog posts, that can be easily customized to your specific needs. Because the below solution is the one I use for my blog, you can also check [full source code][github:svejcar-dev] to get details about imported modules, etc.
 
 <!-- MORE -->
 
@@ -31,11 +31,19 @@ withTOC = defaultHakyllWriterOptions
         { writerNumberSections  = True
         , writerTableOfContents = True
         , writerTOCDepth        = 2
-        , writerTemplate        = Just "$toc$\n$body$"
+        , writerTemplate        = Just tocTemplate
         }
+
+tocTemplate :: Template Text
+tocTemplate = either error id . runIdentity . compileTemplate "" $ T.unlines
+  [ "<div class=\"toc\"><div class=\"header\">Table of Contents</div>"
+  , "$toc$"
+  , "</div>"
+  , "$body$"
+  ]
 ```
 
-The `writerNumberSections` option is worth mentioning, because it automatically adds numbering to both _table of content_ links and the headings inside blog post (as you can also see on this page). These `WriterOptions` can then be used for rendering _blog posts_ like this:
+The `writerNumberSections` option is worth mentioning, because it automatically adds numbering to both _table of contents_ links and the headings inside blog post (as you can also see on this page). These `WriterOptions` can then be used for rendering _blog posts_ like this:
 
 ```haskell
 match "posts/*" $ do
@@ -76,19 +84,7 @@ match "posts/*" $ do
 Although the above code renders the _table of content_ for blog posts and adds automatic numbering to heading, it would be still nice to add some _CSS_ to make things better looking.
 
 ### Adding styles to table of contents
-First thing we need to do is to wrap the rendered _table of contents_ into some `<div>` container with custom _class_, so we can refer it later in _stylesheet_. This can be done by changing the `writerTemplate` field:
-
-```haskell
-withTOC :: WriterOptions
-withTOC = defaultHakyllWriterOptions
-        { writerNumberSections  = True
-        , writerTableOfContents = True
-        , writerTOCDepth        = 2
-        , writerTemplate        = Just "\n<div class=\"toc\"><div class=\"header\">Table of Contents</div>\n$toc$\n</div>\n$body$"
-        }
-```
-
-Now we can add proper styling to the `.toc` _CSS_ class. If you want to change styles for the section numbers of _table of contents_ (as used on this page), you can modify it using the `.toc-section-number` class.
+In the above example, the actual rendered _table of contents_ is wrapped in `<div>` element with `.toc` _CSS_ class, which allows to apply some styling on it. If you want to change styles for the section numbers of _table of contents_ (as used on this page), you can modify it using the `.toc-section-number` class.
 
 ### Adding styles to headings
 Headings itself now contain the automatically generated section numbers, and it's likely that you'd like to visually separate them from the rest of the heading. This can be done by adding styles to `.toc-section-number` class.
@@ -109,7 +105,7 @@ $('.post-content').children('h1, h2, h3, h4, h5').each(function () {
 ```
  
 # Conclusion
-Adding _table of contents_ to your blog posts (mainly the longer ones) can help visitors navigate the content. Fortunately in case of _Hakyll_, the implementation itself is not that difficult, mainly thanks to the underlying _Pandoc_. And with help of some _CSS_ and _JavaScript_, we can make pretty decent looking _table of content_ that would match our specific needs.
+Adding _table of contents_ to your blog posts (mainly the longer ones) can help visitors navigate the content. Fortunately in case of _Hakyll_, the implementation itself is not that difficult, mainly thanks to the underlying _Pandoc_. And with help of some _CSS_ and _JavaScript_, we can make pretty decent looking _table of contents_ that would match our specific needs.
 
 
 [haddock:pandoc:WriterOptions]: https://hackage.haskell.org/package/pandoc-2.8/docs/Text-Pandoc-Options.html#v:WriterOptions
