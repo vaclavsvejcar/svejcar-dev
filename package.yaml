@@ -28,7 +28,6 @@ executables:
       - blaze-html
       - bytestring
       - containers
-      - data-default-class
       - directory
       - filepath
       - hakyll

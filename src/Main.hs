@@ -33,7 +33,10 @@ import           Skylighting.Parser             ( parseSyntaxDefinition )
 
 
 siteConfig :: RenderMode -> SiteConfig
-siteConfig mode = def { scGaId = gaId, scSiteRoot = "https://svejcar.dev/" }
+siteConfig mode = SiteConfig { scGaId     = gaId
+                             , scMode     = mode
+                             , scSiteRoot = "https://svejcar.dev/"
+                             }
  where
   gaId = case mode of
     Draft -> Nothing
@@ -147,9 +150,10 @@ main = do
 
     create ["sitemap.xml"] $ do
       route idRoute
-      compile $ sitemapCompiler def { sitemapBase     = scSiteRoot siteConfig'
-                                    , sitemapRewriter = ('/' :) . stripIndex
-                                    }
+      compile $ sitemapCompiler defSitemapConfig
+        { sitemapBase     = scSiteRoot siteConfig'
+        , sitemapRewriter = ('/' :) . stripIndex
+        }
 
     scssDependency <- makePatternDependency "assets/css/**.scss"
     rulesExtraDependencies [scssDependency]
@@ -175,4 +179,3 @@ main = do
     match "content/robots.txt" $ do
       route stripContent
       compile copyFileCompiler
-

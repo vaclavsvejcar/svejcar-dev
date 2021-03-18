@@ -1,3 +1,5 @@
+{-# LANGUAGE RecordWildCards #-}
+
 {-|
 Module      : Site.Contexts
 Description : Collection of common Hakyll contexts.
@@ -23,13 +25,15 @@ import           Site.Slug                      ( slugify )
 import           Site.Tags                      ( tagCloudField
                                                 , tagLinks
                                                 )
+import           Site.Types                     ( RenderMode(..) )
 
 
 -- | Creates a 'Context' for blog posts.
 postCtx :: SiteConfig -> Tags -> Context String
-postCtx config tags = mconcat
+postCtx config@SiteConfig {..} tags = mconcat
   [ dateField "date"     "%e %B %Y"
   , dateField "datetime" "%Y-%m-%d"
+  , boolField "isProd" (const $ scMode == Prod)
   , tagLinks getTags "tags" tags
   , siteCtx config tags
   ]
@@ -37,9 +41,9 @@ postCtx config tags = mconcat
 
 -- | Creates a 'Context' for main template.
 siteCtx :: SiteConfig -> Tags -> Context String
-siteCtx config tags = mconcat
+siteCtx SiteConfig {..} tags = mconcat
   [ tagCloudField "cloud" 60 150 tags
-  , maybeField "gaId" (scGaId config)
+  , maybeField "gaId" scGaId
   , pageIdField "pageId"
   , defaultContext
   ]

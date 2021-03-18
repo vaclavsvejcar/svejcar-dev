@@ -15,13 +15,12 @@ Module providing functions and data structures for generating @sitemap.xml@
 
 module Site.Sitemap
   ( ChangeFrequency(..)
-  , SitemapConfiguration(..)
-  , def
+  , SitemapConfig(..)
+  , defSitemapConfig
   , sitemapCompiler
   )
 where
 import           Data.Char                      ( toLower )
-import           Data.Default.Class
 import           Data.Maybe                     ( catMaybes )
 import           Data.Time
 import           Hakyll
@@ -31,7 +30,7 @@ import           System.IO.Error
 import           Text.XML.Light
 
 
-data SitemapConfiguration = SitemapConfiguration
+data SitemapConfig = SitemapConfig
   { sitemapExtensions :: [String]
   , sitemapChangeFreq :: FilePath -> ChangeFrequency
   , sitemapPriority   :: FilePath -> Double
@@ -50,13 +49,13 @@ data ChangeFrequency = Always
                      deriving Show
 
 
-instance Default SitemapConfiguration where
-  def = SitemapConfiguration { sitemapExtensions = [".html"]
-                             , sitemapChangeFreq = const Weekly
-                             , sitemapPriority   = const 0.5
-                             , sitemapBase       = "http://example.com/"
-                             , sitemapRewriter   = ('/' :)
-                             }
+defSitemapConfig :: SitemapConfig
+defSitemapConfig = SitemapConfig { sitemapExtensions = [".html"]
+                                 , sitemapChangeFreq = const Weekly
+                                 , sitemapPriority   = const 0.5
+                                 , sitemapBase       = "http://example.com/"
+                                 , sitemapRewriter   = ('/' :)
+                                 }
 
 
 type SitemapRecord = (FilePath, String)
@@ -66,7 +65,7 @@ showFreq :: ChangeFrequency -> String
 showFreq = fmap toLower . show
 
 
-sitemapCompiler :: SitemapConfiguration -> Compiler (Item String)
+sitemapCompiler :: SitemapConfig -> Compiler (Item String)
 sitemapCompiler config = do
   ids  <- getMatches "**"
   urls <- filter extFilter . catMaybes <$> mapM routeWithMod ids
@@ -108,18 +107,18 @@ element name content = Element { elName    = unqual name
                                }
 
 
-xmlUrlSet :: SitemapConfiguration -> [SitemapRecord] -> Element
+xmlUrlSet :: SitemapConfig -> [SitemapRecord] -> Element
 xmlUrlSet config = add_attr xmlns . element "urlset" . fmap (xmlUrl config)
  where
   xmlns = Attr (unqual "xmlns") "http://www.sitemaps.org/schemas/sitemap/0.9"
 
 
-xmlUrl :: SitemapConfiguration -> SitemapRecord -> Element
+xmlUrl :: SitemapConfig -> SitemapRecord -> Element
 xmlUrl conf r = element "url" [ f conf r | f <- sub ]
   where sub = [xmlLoc, xmlLastMod, xmlChangeFreq, xmlPriority]
 
 
-xmlLoc, xmlLastMod, xmlChangeFreq, xmlPriority :: SitemapConfiguration
+xmlLoc, xmlLastMod, xmlChangeFreq, xmlPriority :: SitemapConfig
                                                -> SitemapRecord
                                                -> Element
 xmlLastMod _ (_, m) = elementString "lastmod" m

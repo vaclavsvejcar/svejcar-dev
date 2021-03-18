@@ -5,8 +5,15 @@
         $tags$
     </div>
     <div class="post-content">$body$</div>
-    <div class="additional-info">Found any bug, error or typo? Let me know below in comments or <a href="https://github.com/vaclavsvejcar/svejcar-dev/issues" target="_blank">open issue on GitHub</a>.</div>
+    <div class="additional-info">
+        Found any bug, error or typo? Let me know below in comments or
+        <a href="https://github.com/vaclavsvejcar/svejcar-dev/issues" target="_blank">
+            open issue on GitHub
+        </a>.
+    </div>
 </article>
+
+$if(isProd)$
 <div id="disqus_thread"></div>
 <script>
     var disqus_config = function () {
@@ -24,3 +31,4 @@
     Please enable JavaScript to view the
     <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
 </noscript>
+$endif$

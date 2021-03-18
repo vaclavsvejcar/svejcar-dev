@@ -17,4 +17,4 @@ where
 
 
 -- | Represents the mode in which the site will be rendered.
-data RenderMode = Draft | Prod
+data RenderMode = Draft | Prod deriving (Eq, Show)

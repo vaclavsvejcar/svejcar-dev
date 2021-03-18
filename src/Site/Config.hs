@@ -1,3 +1,5 @@
+{-# LANGUAGE StrictData #-}
+
 {-|
 Module      : Site.Config
 Description : Logic related to site configuration.
@@ -12,19 +14,17 @@ Module providing functions and data structures for handling site configuration.
 
 module Site.Config
   ( SiteConfig(..)
-  , def
   )
 where
 
-import           Data.Default.Class
+import           Site.Types                     ( RenderMode(..) )
+
 
 
 -- | Site configuration.
 data SiteConfig = SiteConfig
   { scGaId     :: Maybe String -- ^ /Google Analytics/ unique ID
+  , scMode     :: RenderMode   -- ^ render mode
   , scSiteRoot :: String       -- ^ Root URL of the site
   }
 
-
-instance Default SiteConfig where
-  def = SiteConfig { scGaId = Nothing, scSiteRoot = "https://example.com" }
